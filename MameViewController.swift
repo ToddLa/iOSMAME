@@ -13,11 +13,14 @@ class MameViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .systemOrange
+        self.view.backgroundColor = .systemBlue
+        self.view.addSubview(mameView)
+        mameView.backgroundColor = .systemOrange
     }
     
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
+        mameView.frame = self.view.bounds
     }
 
 }
