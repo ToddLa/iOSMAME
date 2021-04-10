@@ -7,23 +7,24 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		EF1741FE262134CB00DE8386 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF1741FD262134CB00DE8386 /* AppDelegate.swift */; };
-		EF174200262134CB00DE8386 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF1741FF262134CB00DE8386 /* SceneDelegate.swift */; };
-		EF174202262134CB00DE8386 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF174201262134CB00DE8386 /* ViewController.swift */; };
-		EF174205262134CB00DE8386 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EF174203262134CB00DE8386 /* Main.storyboard */; };
-		EF174207262134CC00DE8386 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EF174206262134CC00DE8386 /* Assets.xcassets */; };
-		EF17420A262134CC00DE8386 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EF174208262134CC00DE8386 /* LaunchScreen.storyboard */; };
+		EF17423D262214E700DE8386 /* MameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF17423C262214E700DE8386 /* MameViewController.swift */; };
+		EF174251262215EA00DE8386 /* MetalView.m in Sources */ = {isa = PBXBuildFile; fileRef = EF17424E262215EA00DE8386 /* MetalView.m */; };
+		EF174252262215EA00DE8386 /* MetalViewShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = EF17424F262215EA00DE8386 /* MetalViewShaders.metal */; };
+		EF17425C262216D000DE8386 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EF174258262216D000DE8386 /* LaunchScreen.storyboard */; };
+		EF17425D262216D000DE8386 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EF174259262216D000DE8386 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		EF1741FA262134CB00DE8386 /* IOSMAME.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IOSMAME.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		EF1741FD262134CB00DE8386 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		EF1741FF262134CB00DE8386 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		EF174201262134CB00DE8386 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		EF174204262134CB00DE8386 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		EF174206262134CC00DE8386 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		EF174209262134CC00DE8386 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		EF17420B262134CC00DE8386 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		EF17423C262214E700DE8386 /* MameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MameViewController.swift; sourceTree = "<group>"; };
+		EF17424D262215EA00DE8386 /* MetalViewShaders.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetalViewShaders.h; sourceTree = "<group>"; };
+		EF17424E262215EA00DE8386 /* MetalView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MetalView.m; sourceTree = "<group>"; };
+		EF17424F262215EA00DE8386 /* MetalViewShaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = MetalViewShaders.metal; sourceTree = "<group>"; };
+		EF174250262215EA00DE8386 /* MetalView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetalView.h; sourceTree = "<group>"; };
+		EF174258262216D000DE8386 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
+		EF174259262216D000DE8386 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		EF17425A262216D000DE8386 /* Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
+		EF17425B262216D000DE8386 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -40,7 +41,9 @@
 		EF1741F1262134CB00DE8386 = {
 			isa = PBXGroup;
 			children = (
-				EF1741FC262134CB00DE8386 /* IOSMAME */,
+				EF17423C262214E700DE8386 /* MameViewController.swift */,
+				EF174257262216D000DE8386 /* IOSMAME */,
+				EF17424C262215EA00DE8386 /* MetalView */,
 				EF1741FB262134CB00DE8386 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -53,16 +56,24 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		EF1741FC262134CB00DE8386 /* IOSMAME */ = {
+		EF17424C262215EA00DE8386 /* MetalView */ = {
 			isa = PBXGroup;
 			children = (
-				EF1741FD262134CB00DE8386 /* AppDelegate.swift */,
-				EF1741FF262134CB00DE8386 /* SceneDelegate.swift */,
-				EF174201262134CB00DE8386 /* ViewController.swift */,
-				EF174203262134CB00DE8386 /* Main.storyboard */,
-				EF174206262134CC00DE8386 /* Assets.xcassets */,
-				EF174208262134CC00DE8386 /* LaunchScreen.storyboard */,
-				EF17420B262134CC00DE8386 /* Info.plist */,
+				EF17424D262215EA00DE8386 /* MetalViewShaders.h */,
+				EF17424E262215EA00DE8386 /* MetalView.m */,
+				EF17424F262215EA00DE8386 /* MetalViewShaders.metal */,
+				EF174250262215EA00DE8386 /* MetalView.h */,
+			);
+			path = MetalView;
+			sourceTree = "<group>";
+		};
+		EF174257262216D000DE8386 /* IOSMAME */ = {
+			isa = PBXGroup;
+			children = (
+				EF174258262216D000DE8386 /* LaunchScreen.storyboard */,
+				EF174259262216D000DE8386 /* Assets.xcassets */,
+				EF17425A262216D000DE8386 /* Bridging-Header.h */,
+				EF17425B262216D000DE8386 /* Info.plist */,
 			);
 			path = IOSMAME;
 			sourceTree = "<group>";
@@ -98,6 +109,7 @@
 				TargetAttributes = {
 					EF1741F9262134CB00DE8386 = {
 						CreatedOnToolsVersion = 12.4;
+						LastSwiftMigration = 1240;
 					};
 				};
 			};
@@ -124,9 +136,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EF17420A262134CC00DE8386 /* LaunchScreen.storyboard in Resources */,
-				EF174207262134CC00DE8386 /* Assets.xcassets in Resources */,
-				EF174205262134CB00DE8386 /* Main.storyboard in Resources */,
+				EF17425D262216D000DE8386 /* Assets.xcassets in Resources */,
+				EF17425C262216D000DE8386 /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -137,32 +148,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EF174202262134CB00DE8386 /* ViewController.swift in Sources */,
-				EF1741FE262134CB00DE8386 /* AppDelegate.swift in Sources */,
-				EF174200262134CB00DE8386 /* SceneDelegate.swift in Sources */,
+				EF174252262215EA00DE8386 /* MetalViewShaders.metal in Sources */,
+				EF174251262215EA00DE8386 /* MetalView.m in Sources */,
+				EF17423D262214E700DE8386 /* MameViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXVariantGroup section */
-		EF174203262134CB00DE8386 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				EF174204262134CB00DE8386 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		EF174208262134CC00DE8386 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				EF174209262134CC00DE8386 /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		EF17420C262134CC00DE8386 /* Debug */ = {
@@ -286,6 +278,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 8RUN83V8CA;
 				INFOPLIST_FILE = IOSMAME/Info.plist;
@@ -295,6 +288,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.toddla.IOSMAME;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "IOSMAME/Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -305,6 +300,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 8RUN83V8CA;
 				INFOPLIST_FILE = IOSMAME/Info.plist;
@@ -314,6 +310,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.toddla.IOSMAME;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "IOSMAME/Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
