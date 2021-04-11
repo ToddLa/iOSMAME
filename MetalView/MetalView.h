@@ -39,28 +39,30 @@ static Shader const ShaderTextureMultiply = @"texture, blend=mul";
 //
 @interface MetalView : UIView
 
-@property(class, readonly) BOOL isSupported;
-@property(readonly) CGColorSpaceRef colorSpace;
-@property(readonly) MTLPixelFormat pixelFormat;
+@property(class, readonly, nonatomic) BOOL isSupported;
+@property(readonly, nonatomic) CGColorSpaceRef colorSpace;
+@property(readonly, nonatomic) MTLPixelFormat pixelFormat;
 
-@property(nonatomic) NSInteger preferredFramesPerSecond;
+@property(readwrite, nonatomic) NSInteger preferredFramesPerSecond;
 
 // thread safe versions of bounds and drawable size.
-@property(readonly) CGSize drawableSize;
-@property(readonly) CGSize boundsSize;
+@property(readonly, nonatomic) CGSize drawableSize;
+@property(readonly, nonatomic) CGSize boundsSize;
 
 // frame and render statistics
-@property(readwrite) NSUInteger frameCount;         // total frames drawn.
-@property(readonly)  CGFloat    frameRate;          // time it took last frame to draw (1/sec)
-@property(readonly)  CGFloat    frameRateAverage;   // average frameRate
-@property(readonly)  CGFloat    renderTime;         // time it took last frame to render (sec)
-@property(readonly)  CGFloat    renderTimeAverage;  // average renderTime
-@property(readonly)  NSUInteger vertexCount;        // total verticies drawn last frame.
-@property(readonly)  NSUInteger primCount;          // total primitives drawn last frame.
+@property(readwrite, nonatomic) NSUInteger frameCount;         // total frames drawn.
+@property(readonly, nonatomic)  CGFloat    frameRate;          // time it took last frame to draw (1/sec)
+@property(readonly, nonatomic)  CGFloat    frameRateAverage;   // average frameRate
+@property(readonly, nonatomic)  CGFloat    renderTime;         // time it took last frame to render (sec)
+@property(readonly, nonatomic)  CGFloat    renderTimeAverage;  // average renderTime
+@property(readonly, nonatomic)  NSUInteger vertexCount;        // total verticies drawn last frame.
+@property(readonly, nonatomic)  NSUInteger primCount;          // total primitives drawn last frame.
 
+@property(readwrite, nonatomic) BOOL       showFPS;            // draw FPS stats
+@property(readwrite, nonatomic) CGFloat    sizeFPS;            // size of FPS text, height in points
 
 -(BOOL)drawBegin;
--(void)drawPrim:(MTLPrimitiveType)type vertices:(Vertex2D*)vertices count:(NSUInteger)count;
+-(void)drawPrim:(MTLPrimitiveType)type vertices:(const Vertex2D*)vertices count:(NSUInteger)count;
 -(void)drawPoint:(CGPoint)point size:(CGFloat)size color:(VertexColor)color;
 -(void)drawLine:(CGPoint)start to:(CGPoint)end color:(VertexColor)color;
 -(void)drawLine:(CGPoint)start to:(CGPoint)end width:(CGFloat)width color:(VertexColor)color;
@@ -68,8 +70,11 @@ static Shader const ShaderTextureMultiply = @"texture, blend=mul";
 -(void)drawRect:(CGRect)rect color:(VertexColor)color;
 -(void)drawRect:(CGRect)rect color:(VertexColor)color orientation:(UIImageOrientation)orientation;
 -(void)drawGradientRect:(CGRect)rect color:(VertexColor)color1 color:(VertexColor)color2 orientation:(UIImageOrientation)orientation;
--(void)drawTriangle:(CGPoint*)points color:(VertexColor)color;
+-(void)drawTriangle:(const CGPoint*)points color:(VertexColor)color;
+-(void)drawText:(NSString*)text at:(CGPoint)xy height:(CGFloat)height color:(VertexColor)color;
 -(void)drawEnd;
+
+-(CGSize)sizeText:(NSString*)text height:(CGFloat)height;
 
 /// set the drawing corrdinates, by default it is set to the view bounds (in points)
 -(void)setViewRect:(CGRect)rect;
@@ -108,6 +113,7 @@ static Shader const ShaderTextureMultiply = @"texture, blend=mul";
 -(void)setShaderVariables:(nullable NSDictionary<NSString*, NSValue*>*)variables;
 -(NSDictionary<NSString*, NSValue*>*)getShaderVariables;
 
+-(void)textureCacheFlush;
 -(void)setTextureFilter:(MTLSamplerMinMagFilter)filter;
 -(void)setTextureAddressMode:(MTLSamplerAddressMode)mode;
 -(void)setTexture:(NSUInteger)index texture:(void*)identifier hash:(NSUInteger)hash width:(NSUInteger)width height:(NSUInteger)height format:(MTLPixelFormat)format texture_load:(void (NS_NOESCAPE ^)(id<MTLTexture> texture))texture_load;

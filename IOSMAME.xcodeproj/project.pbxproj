@@ -59,10 +59,10 @@
 		EF17424C262215EA00DE8386 /* MetalView */ = {
 			isa = PBXGroup;
 			children = (
-				EF17424D262215EA00DE8386 /* MetalViewShaders.h */,
-				EF17424E262215EA00DE8386 /* MetalView.m */,
-				EF17424F262215EA00DE8386 /* MetalViewShaders.metal */,
 				EF174250262215EA00DE8386 /* MetalView.h */,
+				EF17424E262215EA00DE8386 /* MetalView.m */,
+				EF17424D262215EA00DE8386 /* MetalViewShaders.h */,
+				EF17424F262215EA00DE8386 /* MetalViewShaders.metal */,
 			);
 			path = MetalView;
 			sourceTree = "<group>";
