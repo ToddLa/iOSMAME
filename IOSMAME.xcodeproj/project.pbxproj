@@ -327,6 +327,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/IOSMAME",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/../MAME4iOS",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.toddla.IOSMAME;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -355,6 +356,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/IOSMAME",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/../MAME4iOS",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.toddla.IOSMAME;
 				PRODUCT_NAME = "$(TARGET_NAME)";

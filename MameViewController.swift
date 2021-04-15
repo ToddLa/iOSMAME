@@ -61,7 +61,7 @@ class MameViewController: UIViewController {
         NSLog("pressesBegan: \(presses.first?.key?.charactersIgnoringModifiers.replacingOccurrences(of:"\r", with:"⏎") ?? "")")
         if let hid = presses.first?.key?.keyCode, let key = myosd_keycode(hid) {
             NSLog("KEY: \(hid.rawValue) => \(key.rawValue) DOWN ")
-            mameKeyboard[Int(key.rawValue)] = 0x80
+            mameKeyboard[Int(key.rawValue)] = 1
         }
         super.pressesBegan(presses, with:event)
     }
@@ -84,22 +84,21 @@ class MameViewController: UIViewController {
             let url = docs.appendingPathComponent(dir, isDirectory:true)
             try? FileManager.default.createDirectory(at:url, withIntermediateDirectories:false)
         }
-        
-        while true {
-            var callbacks = myosd_callbacks()
-            callbacks.video_init = video_init
-            callbacks.video_draw = video_draw
-            callbacks.input_poll = input_poll
-            
-            callbacks.output_text = {(channel:Int32, text:UnsafePointer<Int8>!) -> Void in
-                let chan = ["ERROR", "WARNING", "INFO", "DEBUG", "VERBOSE"]
-                print("[\(chan[Int(channel)])]: \(String(cString:text))", terminator:"")
-            }
 
+        var callbacks = myosd_callbacks()
+        callbacks.video_init = video_init
+        callbacks.video_draw = video_draw
+        callbacks.input_poll = input_poll
+        
+        callbacks.output_text = {(channel:Int32, text:UnsafePointer<Int8>!) -> Void in
+            let chan = ["ERROR", "WARNING", "INFO", "DEBUG", "VERBOSE"]
+            print("[\(chan[Int(channel)])]: \(String(cString:text))", terminator:"")
+        }
+
+        while true {
             myosd_main(0, nil, &callbacks, MemoryLayout<myosd_callbacks>.size)
         }
     }
-
 }
 
 func video_init(width:Int32, height:Int32) {
