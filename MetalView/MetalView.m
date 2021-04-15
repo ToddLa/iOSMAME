@@ -21,7 +21,7 @@
 
 #define NUM_VERTEX (8*1024)       // number of vertices in a vertex buffer.
 
-#define RESET_AVERAGE_EVERY 120   // reset averages every this many frames
+#define RESET_AVERAGE_EVERY (120 * 30)   // reset averages every this many frames
 
 // Direct method and property calls with Xcode 12 and above.
 #if defined(__IPHONE_14_0)

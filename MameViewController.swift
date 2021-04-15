@@ -9,61 +9,112 @@ import UIKit
 
 class MameViewController: UIViewController {
     
+    static var shared:MameViewController?
+    
     let mameView = MetalView()
-
+    var mameKeyboard = [UInt8](repeating:0, count:256)
+    var mameScreenSize:CGSize = .zero {
+        didSet {
+            DispatchQueue.main.async {
+                self.view.setNeedsLayout()
+            }
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .systemBlue
+        Self.shared = self
+        self.view.backgroundColor = .darkGray
         self.view.addSubview(mameView)
         mameView.backgroundColor = .systemOrange
+        mameView.showFPS = true
         
         Thread(target:self, selector: #selector(backgroundThread), object:nil).start()
     }
     
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        mameView.frame = self.view.bounds
+        var rect = self.view.bounds
+        if mameScreenSize != .zero {
+            rect = rect.inset(by:self.view.safeAreaInsets)
+            //rect = AVMakeRect(aspectRatio:mameScreenSize, insideRect:rect)
+            let scale = min(rect.width / mameScreenSize.width, rect.height / mameScreenSize.height)
+            let w = floor(mameScreenSize.width * scale)
+            let h = floor(mameScreenSize.height * scale)
+            rect.origin.x = rect.origin.x + floor((rect.width - w) / 2)
+            //rect.origin.y = rect.origin.y + floor((rect.height - h) / 2)
+            rect.size = CGSize(width:w, height:h)
+        }
+        mameView.frame = rect
+        mameView.textureCacheFlush()
     }
     
     override var prefersStatusBarHidden: Bool {
-        return true;
+        return true
+    }
+    override var prefersHomeIndicatorAutoHidden: Bool {
+        return true
     }
     
+    // keyboard input
+    override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+        NSLog("pressesBegan: \(presses.first?.key?.charactersIgnoringModifiers.replacingOccurrences(of:"\r", with:"⏎") ?? "")")
+        if let hid = presses.first?.key?.keyCode, let key = myosd_keycode(hid) {
+            NSLog("KEY: \(hid.rawValue) => \(key.rawValue) DOWN ")
+            mameKeyboard[Int(key.rawValue)] = 0x80
+        }
+        super.pressesBegan(presses, with:event)
+    }
+    override func pressesEnded(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+        NSLog("pressesEnded: \(presses.first?.key?.charactersIgnoringModifiers.replacingOccurrences(of:"\r", with:"⏎") ?? "")")
+        if let hid = presses.first?.key?.keyCode, let key = myosd_keycode(hid) {
+            NSLog("KEY: \(hid.rawValue) => \(key.rawValue) UP ")
+            mameKeyboard[Int(key.rawValue)] = 0
+        }
+        super.pressesEnded(presses, with:event)
+    }
+
     @objc
     func backgroundThread() {
+        
+        let docs = FileManager.default.urls(for:.documentDirectory, in:.userDomainMask).first!
+        FileManager.default.changeCurrentDirectoryPath(docs.path)
+
+        for dir in ["roms", "cfg"] {
+            let url = docs.appendingPathComponent(dir, isDirectory:true)
+            try? FileManager.default.createDirectory(at:url, withIntermediateDirectories:false)
+        }
+        
         while true {
-            var time = CACurrentMediaTime()
-            mameView.showFPS = true
-            if mameView.drawBegin() {
-                let rect = CGRect(origin:.zero, size:mameView.boundsSize)
-                mameView.setViewRect(rect)
-                for _ in 0...1000 {
-                    let color = VertexColor.random
-                    let points = [CGPoint.random(in:rect.size), CGPoint.random(in:rect.size), CGPoint.random(in:rect.size)]
-                    mameView.drawTriangle(points, color:color)
-                }
-                mameView.drawEnd()
+            var callbacks = myosd_callbacks()
+            callbacks.video_init = video_init
+            callbacks.video_draw = video_draw
+            callbacks.input_poll = input_poll
+            
+            callbacks.output_text = {(channel:Int32, text:UnsafePointer<Int8>!) -> Void in
+                let chan = ["ERROR", "WARNING", "INFO", "DEBUG", "VERBOSE"]
+                print("[\(chan[Int(channel)])]: \(String(cString:text))", terminator:"")
             }
-            time = CACurrentMediaTime() - time
-            time = (1.0 / 60.0) - time;
-            if (time > 0.0) {
-                Thread.sleep(forTimeInterval: time)
-            }
+
+            myosd_main(0, nil, &callbacks, MemoryLayout<myosd_callbacks>.size)
         }
     }
 
 }
 
-extension CGPoint {
-    static func random(in size:CGSize) -> CGPoint {
-        return CGPoint(x: CGFloat.random(in: 0..<size.width), y: CGFloat.random(in: 0..<size.height))
+func video_init(width:Int32, height:Int32) {
+    MameViewController.shared?.mameScreenSize = CGSize(width:Int(width), height: Int(height))
+}
+
+func video_draw(prims:UnsafeMutablePointer<myosd_render_primitive>!, width:Int32, height:Int32) {
+    autoreleasepool {
+        MameViewController.shared?.mameView.drawMamePrimitives(prims, size: CGSize(width:Int(width), height: Int(height)))
     }
 }
 
-extension VertexColor {
-    static var random : VertexColor {
-        return VertexColor(Float.random(in:0...1), Float.random(in:0...1), Float.random(in:0...1), 1)
-    }
+func input_poll(input:UnsafeMutablePointer<myosd_input_state>!, size:Int) {
+    guard var keyboard = MameViewController.shared?.mameKeyboard else {return}
+    memcpy(&input.pointee.keyboard, &keyboard, 256)
 }
 
 @main
