@@ -39,6 +39,7 @@
 		EF17427B26236D7E00DE8386 /* MameDraw.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MameDraw.m; sourceTree = "<group>"; };
 		EF5184B22627E75400BB4B7C /* libmame-ios.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libmame-ios.a"; sourceTree = "<group>"; };
 		EF5184B52627FA5C00BB4B7C /* MameKeyCode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MameKeyCode.swift; sourceTree = "<group>"; };
+		EFA8FC9F2628E1910003615D /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +59,7 @@
 		EF1741F1262134CB00DE8386 = {
 			isa = PBXGroup;
 			children = (
+				EFA8FC9F2628E1910003615D /* README.md */,
 				EF17423C262214E700DE8386 /* MameViewController.swift */,
 				EF5184B52627FA5C00BB4B7C /* MameKeyCode.swift */,
 				EF17427A26236D5000DE8386 /* MameDraw.h */,
