@@ -6,10 +6,14 @@
 //
 
 import UIKit
+import GameController
 
 class MameViewController: UIViewController {
     
     static var shared:MameViewController?
+    
+    var keyboardConnected = false
+    var keyboardHasEscapeKey = false
     
     let mameView = MetalView()
     var mameKeyboard = [UInt8](repeating:0, count:256)
@@ -28,6 +32,9 @@ class MameViewController: UIViewController {
         self.view.addSubview(mameView)
         mameView.backgroundColor = .systemOrange
         mameView.showFPS = true
+        
+        NotificationCenter.default.addObserver(self, selector:#selector(keyboardChange), name:.GCKeyboardDidConnect, object: nil)
+        NotificationCenter.default.addObserver(self, selector:#selector(keyboardChange), name:.GCKeyboardDidDisconnect, object: nil)
         
         Thread(target:self, selector: #selector(backgroundThread), object:nil).start()
     }
@@ -56,10 +63,18 @@ class MameViewController: UIViewController {
         return true
     }
     
+    func mameKey(_ hid:UIKeyboardHIDUsage) -> myosd_keycode? {
+        guard let key = myosd_keycode(hid) else {return nil}
+        if key == MYOSD_KEY_TILDE && keyboardConnected && !keyboardHasEscapeKey {
+            return MYOSD_KEY_ESC
+        }
+        return key
+    }
+    
     // keyboard input
     override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
         NSLog("pressesBegan: \(presses.first?.key?.charactersIgnoringModifiers.replacingOccurrences(of:"\r", with:"⏎") ?? "")")
-        if let hid = presses.first?.key?.keyCode, let key = myosd_keycode(hid) {
+        if let hid = presses.first?.key?.keyCode, let key = mameKey(hid) {
             NSLog("KEY: \(hid.rawValue) => \(key.rawValue) DOWN ")
             mameKeyboard[Int(key.rawValue)] = 1
         }
@@ -67,11 +82,19 @@ class MameViewController: UIViewController {
     }
     override func pressesEnded(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
         NSLog("pressesEnded: \(presses.first?.key?.charactersIgnoringModifiers.replacingOccurrences(of:"\r", with:"⏎") ?? "")")
-        if let hid = presses.first?.key?.keyCode, let key = myosd_keycode(hid) {
+        if let hid = presses.first?.key?.keyCode, let key = mameKey(hid) {
             NSLog("KEY: \(hid.rawValue) => \(key.rawValue) UP ")
             mameKeyboard[Int(key.rawValue)] = 0
         }
         super.pressesEnded(presses, with:event)
+    }
+    
+    @objc
+    func keyboardChange() {
+        keyboardConnected = GCKeyboard.coalesced != nil
+        //TODO: how to detect a "smart" keyboard without an Escape key?
+        //keyboardHasEscapeKey = GCKeyboard.coalesced?.keyboardInput?["Escape"] != nil
+        keyboardHasEscapeKey = false
     }
 
     @objc
