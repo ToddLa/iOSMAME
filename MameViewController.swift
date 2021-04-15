@@ -91,6 +91,7 @@ class MameViewController: UIViewController {
     
     @objc
     func keyboardChange() {
+        print("KEYBOARD: \(GCKeyboard.coalesced?.vendorName ?? "None") \(GCKeyboard.coalesced?.productCategory ?? "")")
         keyboardConnected = GCKeyboard.coalesced != nil
         //TODO: how to detect a "smart" keyboard without an Escape key?
         //keyboardHasEscapeKey = GCKeyboard.coalesced?.keyboardInput?["Escape"] != nil
