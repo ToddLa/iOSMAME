@@ -56,7 +56,7 @@ class MameKeyboard : UIView {
             }
             addSubview(UIStackView(axis:.vertical,
                 UIView(),
-                UIStackView(spacing:16.0,
+                UIStackView(spacing:4.0,
                     Button("ESC", MYOSD_KEY_ESC),
                     Button("SELECT", MYOSD_KEY_5),
                     UIView(),
@@ -94,23 +94,18 @@ class MameKeyboard : UIView {
         }
         subviews.first!.frame = bounds
         
-        let h = UITraitCollection.current.horizontalSizeClass == .compact ? (bounds.height / 6) : (bounds.height / 4)
+        // we need to go adjust the heights and fonts from all our buttons, ick!
+        let h = bounds.height / 4
         let cfg = UIImage.SymbolConfiguration(font:UIFont.boldSystemFont(ofSize:h))
-        for view in subviews.first!.subviews {
-            for view in view.subviews {
-                if let btn = view as? UIButton {
-                    if btn.currentImage == nil {
-                        btn.titleLabel?.font = .boldSystemFont(ofSize:h/2)
-                    }
-                    else {
-                        btn.setConstraint(.height, equalTo:h)
-                        for state in [UIControl.State.normal, .highlighted] {
-                            if let img = btn.image(for:state) {
-                                btn.setImage(img.applyingSymbolConfiguration(cfg), for:state)
-                            }
-                        }
-                    }
-                }
+        for btn in subviews.first!.subviews.flatMap({$0.subviews}).compactMap({$0 as? UIButton}) {
+            if btn.currentImage == nil {
+                btn.setConstraint(.height, equalTo:h/2)
+                btn.titleLabel?.font = .boldSystemFont(ofSize:h/2 * 0.8)
+            }
+            else {
+                btn.setConstraint(.height, equalTo:h)
+                btn.setImage(btn.image(for:.normal)?.applyingSymbolConfiguration(cfg), for:.normal)
+                btn.setImage(btn.image(for:.highlighted)?.applyingSymbolConfiguration(cfg), for:.highlighted)
             }
         }
     }

@@ -29,7 +29,7 @@ class MameViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         Self.shared = self
-        self.view.backgroundColor = .darkGray
+        self.view.backgroundColor = .black
         self.view.addSubview(mameView)
         mameView.backgroundColor = .systemOrange
         mameView.showFPS = true
@@ -61,8 +61,8 @@ class MameViewController: UIViewController {
         mameView.frame = rect
         mameView.textureCacheFlush()
         
-        rect = view.bounds
-        keyboard.frame = CGRect(x:0, y:rect.height * 0.667, width:rect.width, height:rect.height * 0.333)
+        let h = max(view.bounds.height * 0.333, 200.0)
+        keyboard.frame = CGRect(x:0, y:view.bounds.height - h, width:view.bounds.width, height:h)
         keyboard.alpha = keyboardConnected ? 0.333 : 0.667
     }
     
