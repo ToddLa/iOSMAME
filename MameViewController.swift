@@ -13,7 +13,7 @@ class MameViewController: UIViewController {
     static var shared:MameViewController?
     
     var keyboardConnected = false
-    var keyboardHasEscapeKey = false
+    var keyboardHasEscapeKey:Bool?
     
     let mameView = MetalView()
     var mameKeyboard = [UInt8](repeating:0, count:256)
@@ -62,41 +62,46 @@ class MameViewController: UIViewController {
     override var prefersHomeIndicatorAutoHidden: Bool {
         return true
     }
-    
-    func mameKey(_ hid:UIKeyboardHIDUsage) -> myosd_keycode? {
-        guard let key = myosd_keycode(hid) else {return nil}
-        if key == MYOSD_KEY_TILDE && keyboardConnected && !keyboardHasEscapeKey {
-            return MYOSD_KEY_ESC
-        }
-        return key
+
+    // MARK: keyboard input
+
+    func mameKey(_ key:myosd_keycode, _ pressed:Bool) {
+        NSLog("KEY: \(key.rawValue) \(pressed ? "DOWN" : "UP")")
+        mameKeyboard[Int(key.rawValue)] = pressed ? 1 : 0
     }
-    
-    // keyboard input
-    override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-        NSLog("pressesBegan: \(presses.first?.key?.charactersIgnoringModifiers.replacingOccurrences(of:"\r", with:"⏎") ?? "")")
-        if let hid = presses.first?.key?.keyCode, let key = mameKey(hid) {
-            NSLog("KEY: \(hid.rawValue) => \(key.rawValue) DOWN ")
-            mameKeyboard[Int(key.rawValue)] = 1
+
+    func mameKey(_ hid:UIKeyboardHIDUsage?, _ pressed:Bool) {
+        if let hid = hid, var key = myosd_keycode(hid) {
+            if keyboardHasEscapeKey == nil && key == MYOSD_KEY_ESC {
+                keyboardHasEscapeKey = true
+            }
+            if keyboardHasEscapeKey != true && key == MYOSD_KEY_TILDE {
+                key = MYOSD_KEY_ESC
+            }
+            mameKey(key, pressed)
         }
+    }
+
+    override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
         super.pressesBegan(presses, with:event)
+        mameKey(presses.first?.key?.keyCode, true)
     }
     override func pressesEnded(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-        NSLog("pressesEnded: \(presses.first?.key?.charactersIgnoringModifiers.replacingOccurrences(of:"\r", with:"⏎") ?? "")")
-        if let hid = presses.first?.key?.keyCode, let key = mameKey(hid) {
-            NSLog("KEY: \(hid.rawValue) => \(key.rawValue) UP ")
-            mameKeyboard[Int(key.rawValue)] = 0
-        }
         super.pressesEnded(presses, with:event)
+        mameKey(presses.first?.key?.keyCode, false)
     }
     
     @objc
     func keyboardChange() {
-        print("KEYBOARD: \(GCKeyboard.coalesced?.vendorName ?? "None") \(GCKeyboard.coalesced?.productCategory ?? "")")
+        print("KEYBOARD: \(GCKeyboard.coalesced?.vendorName ?? "None")")
         keyboardConnected = GCKeyboard.coalesced != nil
         //TODO: how to detect a "smart" keyboard without an Escape key?
         //keyboardHasEscapeKey = GCKeyboard.coalesced?.keyboardInput?["Escape"] != nil
-        keyboardHasEscapeKey = false
+        keyboardHasEscapeKey = nil
+        view.setNeedsLayout()
     }
+
+    // MARK: MAME background thread
 
     @objc
     func backgroundThread() {
@@ -125,6 +130,8 @@ class MameViewController: UIViewController {
     }
 }
 
+// MARK: LIBMAME callbacks
+
 func video_init(width:Int32, height:Int32) {
     MameViewController.shared?.mameScreenSize = CGSize(width:Int(width), height: Int(height))
 }
@@ -139,6 +146,8 @@ func input_poll(input:UnsafeMutablePointer<myosd_input_state>!, size:Int) {
     guard var keyboard = MameViewController.shared?.mameKeyboard else {return}
     memcpy(&input.pointee.keyboard, &keyboard, 256)
 }
+
+// MARK: AppDelegate
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
