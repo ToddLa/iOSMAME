@@ -12,6 +12,7 @@ class MameViewController: UIViewController {
     
     static var shared:MameViewController?
     
+    let keyboard = MameKeyboard()
     var keyboardConnected = false
     var keyboardHasEscapeKey:Bool?
     
@@ -32,7 +33,10 @@ class MameViewController: UIViewController {
         self.view.addSubview(mameView)
         mameView.backgroundColor = .systemOrange
         mameView.showFPS = true
-        
+
+        keyboard.tintColor = .systemYellow
+        self.view.addSubview(keyboard)
+
         NotificationCenter.default.addObserver(self, selector:#selector(keyboardChange), name:.GCKeyboardDidConnect, object: nil)
         NotificationCenter.default.addObserver(self, selector:#selector(keyboardChange), name:.GCKeyboardDidDisconnect, object: nil)
         
@@ -41,7 +45,7 @@ class MameViewController: UIViewController {
     
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        var rect = self.view.bounds
+        var rect = view.bounds
         if mameScreenSize != .zero {
             rect = rect.inset(by:self.view.safeAreaInsets)
             //rect = AVMakeRect(aspectRatio:mameScreenSize, insideRect:rect)
@@ -49,11 +53,17 @@ class MameViewController: UIViewController {
             let w = floor(mameScreenSize.width * scale)
             let h = floor(mameScreenSize.height * scale)
             rect.origin.x = rect.origin.x + floor((rect.width - w) / 2)
-            //rect.origin.y = rect.origin.y + floor((rect.height - h) / 2)
+            if keyboardConnected {
+                rect.origin.y = rect.origin.y + floor((rect.height - h) / 2)
+            }
             rect.size = CGSize(width:w, height:h)
         }
         mameView.frame = rect
         mameView.textureCacheFlush()
+        
+        rect = view.bounds
+        keyboard.frame = CGRect(x:0, y:rect.height * 0.667, width:rect.width, height:rect.height * 0.333)
+        keyboard.alpha = keyboardConnected ? 0.333 : 0.667
     }
     
     override var prefersStatusBarHidden: Bool {
@@ -62,9 +72,20 @@ class MameViewController: UIViewController {
     override var prefersHomeIndicatorAutoHidden: Bool {
         return true
     }
+    
+    // MARK: state
+    
+    var inGame : Bool {
+        let state = UInt32(myosd_get(Int32(MYOSD_STATE))) & (MYOSD_STATE_INGAME.rawValue|MYOSD_STATE_INMENU.rawValue)
+        return state == MYOSD_STATE_INGAME.rawValue
+    }
+    
+    var inMenu: Bool {
+        return !inGame
+    }
 
     // MARK: keyboard input
-
+    
     func mameKey(_ key:myosd_keycode, _ pressed:Bool) {
         NSLog("KEY: \(key.rawValue) \(pressed ? "DOWN" : "UP")")
         mameKeyboard[Int(key.rawValue)] = pressed ? 1 : 0
@@ -72,6 +93,7 @@ class MameViewController: UIViewController {
 
     func mameKey(_ hid:UIKeyboardHIDUsage?, _ pressed:Bool) {
         if let hid = hid, var key = myosd_keycode(hid) {
+            // none of Apples "smart" keyboards have ESC keys, so use TILDE
             if keyboardHasEscapeKey == nil && key == MYOSD_KEY_ESC {
                 keyboardHasEscapeKey = true
             }
