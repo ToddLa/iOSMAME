@@ -23,90 +23,94 @@ class MameKeyboard : UIView {
         super.layoutSubviews()
         
         if (subviews.count == 0) {
-            func Button(_ text:String = "", _ key:myosd_keycode? = nil) -> UIView {
-                if text == "" {
-                    return UIView().setConstraint(.width, equalTo:.height)
-                }
-
-                let btn = UIButton(type: .system)
-                if let key = key {
-                    btn.addAction(UIAction() { _ in
-                        MameViewController.shared?.mameKey(translate(key), true)
-                     }, for:.touchDown)
-                    btn.addAction(UIAction() { _ in
-                        MameViewController.shared?.mameKey(translate(key), false)
-                    }, for:[.touchUpInside, .touchUpOutside])
-                }
-
-                if let img = UIImage(systemName:text) {
-                    btn.setImage(img, for:.normal)
-                    if let img = UIImage(systemName:"\(text).fill") {
-                        btn.setImage(img, for:.highlighted)
-                    }
-                    btn.setConstraint(.width, equalTo:.height)
-                }
-                else {
-                    btn.setTitle(" \(text) ", for:.normal)
-                    btn.titleLabel?.adjustsFontSizeToFitWidth = true
-                    btn.layer.borderColor = self.tintColor.cgColor
-                    btn.layer.borderWidth = 4
-                    btn.layer.cornerRadius = 4
-                }
-                return btn
-            }
-            addSubview(UIStackView(axis:.vertical,
-                UIView(),
-                UIStackView(spacing:4.0,
-                    Button("ESC", MYOSD_KEY_ESC),
-                    Button("SELECT", MYOSD_KEY_5),
+            addSubview(UIStackView(axis:.vertical, distribution:.fillEqually,
+                UIStackView(axis:.vertical, distribution:.fillEqually,
                     UIView(),
-                    Button("START", MYOSD_KEY_1),
-                    Button("MENU", MYOSD_KEY_TAB)
+                    UIStackView(spacing:4.0,
+                        MameKey("ESC", MYOSD_KEY_ESC),
+                        MameKey("SELECT", MYOSD_KEY_5),
+                        UIView(),
+                        MameKey("START", MYOSD_KEY_1),
+                        MameKey("MENU", MYOSD_KEY_TAB)
+                    )
                 ),
                 UIStackView(
-                    Button(),
-                    Button("arrowtriangle.up.circle", MYOSD_KEY_UP),
-                    Button(),
+                    MameKey(""),
+                    MameKey("arrowtriangle.up.circle", MYOSD_KEY_UP),
+                    MameKey(""),
                     UIView(),
-                    Button(),
-                    Button("y.circle", MYOSD_KEY_SPACE),
-                    Button()
+                    MameKey(""),
+                    MameKey("y.circle", MYOSD_KEY_SPACE),
+                    MameKey("")
                 ),
                 UIStackView(
-                    Button("arrowtriangle.left.circle", MYOSD_KEY_LEFT),
-                    Button(),
-                    Button("arrowtriangle.right.circle", MYOSD_KEY_RIGHT),
+                    MameKey("arrowtriangle.left.circle", MYOSD_KEY_LEFT),
+                    MameKey(""),
+                    MameKey("arrowtriangle.right.circle", MYOSD_KEY_RIGHT),
                     UIView(),
-                    Button("x.circle", MYOSD_KEY_LSHIFT),
-                    Button(),
-                    Button("b.circle", MYOSD_KEY_LALT)
+                    MameKey("x.circle", MYOSD_KEY_LSHIFT),
+                    MameKey(""),
+                    MameKey("b.circle", MYOSD_KEY_LALT)
                 ),
                 UIStackView(
-                    Button(),
-                    Button("arrowtriangle.down.circle", MYOSD_KEY_DOWN),
-                    Button(),
+                    MameKey(""),
+                    MameKey("arrowtriangle.down.circle", MYOSD_KEY_DOWN),
+                    MameKey(""),
                     UIView(),
-                    Button(),
-                    Button("a.circle", MYOSD_KEY_LCONTROL),
-                    Button()
+                    MameKey(""),
+                    MameKey("a.circle", MYOSD_KEY_LCONTROL),
+                    MameKey("")
                 )
             ))
         }
         subviews.first!.frame = bounds
+    }
+}
+
+class MameKey : UIButton {
+    
+    convenience init(_ text:String, _ key:myosd_keycode? = nil) {
+        self.init(type:.system)
         
-        // we need to go adjust the heights and fonts from all our buttons, ick!
-        let h = bounds.height / 4
-        let cfg = UIImage.SymbolConfiguration(font:UIFont.boldSystemFont(ofSize:h))
-        for btn in subviews.first!.subviews.flatMap({$0.subviews}).compactMap({$0 as? UIButton}) {
-            if btn.currentImage == nil {
-                btn.setConstraint(.height, equalTo:h/2)
-                btn.titleLabel?.font = .boldSystemFont(ofSize:h/2 * 0.8)
+        if let key = key {
+            addAction(UIAction() { _ in
+                MameViewController.shared?.mameKey(translate(key), true)
+             }, for:.touchDown)
+            addAction(UIAction() { _ in
+                MameViewController.shared?.mameKey(translate(key), false)
+            }, for:[.touchUpInside, .touchUpOutside])
+        }
+
+        if text == "" {
+            // blank square button
+            setConstraint(.width, equalTo:.height)
+        }
+        else if let img = UIImage(systemName:text) {
+            // square button with system image
+            setImage(img, for:.normal)
+            if let img = UIImage(systemName:"\(text).fill") {
+                setImage(img, for:.highlighted)
             }
-            else {
-                btn.setConstraint(.height, equalTo:h)
-                btn.setImage(btn.image(for:.normal)?.applyingSymbolConfiguration(cfg), for:.normal)
-                btn.setImage(btn.image(for:.highlighted)?.applyingSymbolConfiguration(cfg), for:.highlighted)
-            }
+            setConstraint(.width, equalTo:.height)
+        }
+        else {
+            // button with text
+            setTitle(" \(text) ", for:.normal)
+        }
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        if currentImage != nil {
+            let cfg = UIImage.SymbolConfiguration(pointSize:bounds.height, weight:.bold, scale:.large)
+            setImage(image(for:.normal)?.applyingSymbolConfiguration(cfg), for:.normal)
+            setImage(image(for:.highlighted)?.applyingSymbolConfiguration(cfg), for:.highlighted)
+        }
+        else if currentTitle != nil {
+            titleLabel?.font = .boldSystemFont(ofSize:bounds.height * 0.8)
+            layer.borderColor = tintColor.cgColor
+            layer.borderWidth = 4
+            layer.cornerRadius = 4
         }
     }
 }
@@ -139,7 +143,8 @@ private extension UIStackView {
         self += views
     }
     static func += (stack:UIStackView, view:UIView) {
-        //view.layer.borderWidth = 0.333
+//        view.layer.borderWidth = 0.333
+//        view.layer.borderColor = UIColor.systemGreen.cgColor
         stack.addArrangedSubview(view)
     }
     static func += (stack:UIStackView, views:[UIView]) {

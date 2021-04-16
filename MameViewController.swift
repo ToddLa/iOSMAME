@@ -61,7 +61,7 @@ class MameViewController: UIViewController {
         mameView.frame = rect
         mameView.textureCacheFlush()
         
-        let h = max(view.bounds.height * 0.333, 200.0)
+        let h = min(view.bounds.height * 0.333, view.bounds.width * 0.667)
         keyboard.frame = CGRect(x:0, y:view.bounds.height - h, width:view.bounds.width, height:h)
         keyboard.alpha = keyboardConnected ? 0.333 : 0.667
     }
