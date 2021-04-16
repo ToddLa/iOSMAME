@@ -17,6 +17,7 @@
 		EF17427C26236D7E00DE8386 /* MameDraw.m in Sources */ = {isa = PBXBuildFile; fileRef = EF17427B26236D7E00DE8386 /* MameDraw.m */; };
 		EF5184B32627E75400BB4B7C /* libmame-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EF5184B22627E75400BB4B7C /* libmame-ios.a */; };
 		EF5184B62627FA5C00BB4B7C /* MameKeyCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF5184B52627FA5C00BB4B7C /* MameKeyCode.swift */; };
+		EFA8FCA226290F6B0003615D /* MameKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA8FCA126290F6B0003615D /* MameKeyboard.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,7 @@
 		EF5184B22627E75400BB4B7C /* libmame-ios.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libmame-ios.a"; sourceTree = "<group>"; };
 		EF5184B52627FA5C00BB4B7C /* MameKeyCode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MameKeyCode.swift; sourceTree = "<group>"; };
 		EFA8FC9F2628E1910003615D /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		EFA8FCA126290F6B0003615D /* MameKeyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MameKeyboard.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +64,7 @@
 				EFA8FC9F2628E1910003615D /* README.md */,
 				EF17423C262214E700DE8386 /* MameViewController.swift */,
 				EF5184B52627FA5C00BB4B7C /* MameKeyCode.swift */,
+				EFA8FCA126290F6B0003615D /* MameKeyboard.swift */,
 				EF17427A26236D5000DE8386 /* MameDraw.h */,
 				EF17427B26236D7E00DE8386 /* MameDraw.m */,
 				EF174257262216D000DE8386 /* IOSMAME */,
@@ -188,6 +191,7 @@
 				EF174251262215EA00DE8386 /* MetalView.m in Sources */,
 				EF17423D262214E700DE8386 /* MameViewController.swift in Sources */,
 				EF5184B62627FA5C00BB4B7C /* MameKeyCode.swift in Sources */,
+				EFA8FCA226290F6B0003615D /* MameKeyboard.swift in Sources */,
 				EF17427C26236D7E00DE8386 /* MameDraw.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

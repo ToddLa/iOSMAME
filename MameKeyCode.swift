@@ -1,5 +1,5 @@
 //
-//  MameKey
+//  MameKeyCode - map a HID key code to a MAME/MYOSD key code
 //  IOSMAME
 //
 //  Created by ToddLa on 4/9/21.
