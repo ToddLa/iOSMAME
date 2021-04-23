@@ -171,10 +171,12 @@ func input_poll(input:UnsafeMutablePointer<myosd_input_state>!, size:Int) {
 }
 
 func set_game_info(games:UnsafeMutablePointer<myosd_game_info>?, count:Int32) {
-    let games = Array(UnsafeBufferPointer(start:games, count: Int(count)))
-        .filter({$0.name != nil && $0.description != nil && $0.type == MYOSD_GAME_TYPE_ARCADE.rawValue})
-    for game in games {
-        print("\(String(cString:game.name).padding(toLength:16, withPad:" ", startingAt:0)) \(String(cString:game.description))")
+    autoreleasepool {
+        let games = Array(UnsafeBufferPointer(start:games, count:Int(count)))
+            .filter({$0.name != nil && $0.description != nil && $0.type == MYOSD_GAME_TYPE_ARCADE.rawValue})
+        for game in games {
+            print("\(String(cString:game.name).padding(toLength:16, withPad:" ", startingAt:0)) \(String(cString:game.description))")
+        }
     }
 }
 
