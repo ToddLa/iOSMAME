@@ -140,7 +140,8 @@ class MameViewController: UIViewController {
         callbacks.video_init = video_init
         callbacks.video_draw = video_draw
         callbacks.input_poll = input_poll
-        
+        callbacks.set_game_info = set_game_info
+
         callbacks.output_text = {(channel:Int32, text:UnsafePointer<Int8>!) -> Void in
             let chan = ["ERROR", "WARNING", "INFO", "DEBUG", "VERBOSE"]
             print("[\(chan[Int(channel)])]: \(String(cString:text))", terminator:"")
@@ -168,6 +169,15 @@ func input_poll(input:UnsafeMutablePointer<myosd_input_state>!, size:Int) {
     guard var keyboard = MameViewController.shared?.mameKeyboard else {return}
     memcpy(&input.pointee.keyboard, &keyboard, 256)
 }
+
+func set_game_info(games:UnsafeMutablePointer<myosd_game_info>?, count:Int32) {
+    let games = Array(UnsafeBufferPointer(start:games, count: Int(count)))
+        .filter({$0.name != nil && $0.description != nil && $0.type == MYOSD_GAME_TYPE_ARCADE.rawValue})
+    for game in games {
+        print("\(String(cString:game.name).padding(toLength:16, withPad:" ", startingAt:0)) \(String(cString:game.description))")
+    }
+}
+
 
 // MARK: AppDelegate
 
