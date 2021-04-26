@@ -117,7 +117,7 @@ class MameKey : UIButton {
 
 // map keys when we are in a menu
 private func translate(_ key:myosd_keycode) -> myosd_keycode {
-    if MameViewController.shared?.inGame == true {
+    if MameViewController.shared?.inMenu == false {
         return key
     }
     switch key {

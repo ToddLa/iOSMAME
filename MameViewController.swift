@@ -75,14 +75,7 @@ class MameViewController: UIViewController {
     
     // MARK: state
     
-    var inGame : Bool {
-        let state = UInt32(myosd_get(Int32(MYOSD_STATE))) & (MYOSD_STATE_INGAME.rawValue|MYOSD_STATE_INMENU.rawValue)
-        return state == MYOSD_STATE_INGAME.rawValue
-    }
-    
-    var inMenu: Bool {
-        return !inGame
-    }
+    var inMenu = false
 
     // MARK: keyboard input
     
@@ -141,6 +134,7 @@ class MameViewController: UIViewController {
         callbacks.video_draw = video_draw
         callbacks.input_poll = input_poll
         callbacks.set_game_info = set_game_info
+        callbacks.game_init = game_info
 
         callbacks.output_text = {(channel:Int32, text:UnsafePointer<Int8>!) -> Void in
             let chan = ["ERROR", "WARNING", "INFO", "DEBUG", "VERBOSE"]
@@ -168,6 +162,7 @@ func video_draw(prims:UnsafeMutablePointer<myosd_render_primitive>!, width:Int32
 func input_poll(input:UnsafeMutablePointer<myosd_input_state>!, size:Int) {
     guard var keyboard = MameViewController.shared?.mameKeyboard else {return}
     memcpy(&input.pointee.keyboard, &keyboard, 256)
+    MameViewController.shared?.inMenu = input.pointee.input_mode == MYOSD_INPUT_MODE_UI.rawValue
 }
 
 func set_game_info(games:UnsafeMutablePointer<myosd_game_info>?, count:Int32) {
@@ -177,6 +172,13 @@ func set_game_info(games:UnsafeMutablePointer<myosd_game_info>?, count:Int32) {
         for game in games {
             print("\(String(cString:game.name).padding(toLength:16, withPad:" ", startingAt:0)) \(String(cString:game.description))")
         }
+    }
+}
+
+func game_info(info:UnsafeMutablePointer<myosd_game_info>?) {
+    autoreleasepool {
+        guard let game = info?.pointee, game.name != nil, game.description != nil else {return}
+        print("GAME: \(String(cString:game.name).padding(toLength:16, withPad:" ", startingAt:0)) \(String(cString:game.description))")
     }
 }
 
