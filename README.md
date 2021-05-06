@@ -6,7 +6,7 @@ Simple test app for `libmame` from [MAME4iOS](https://github.com/yoshisuga/MAME4
 * build `libmame-ios.a`
     - run the `make-ios.sh` script. (in `MAME4iOS` or `MAME` project) 
 * get a copy of `libmame-ios.a` 
-    - run `get-libmame.sh` (in this project)
+    - run `get-libmame.sh` `ios` (in this project)
 * change the `DEVTEAM`
 * Build and run on a device.
 
