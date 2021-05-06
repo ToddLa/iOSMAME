@@ -15,14 +15,12 @@
 		EF174274262362E400DE8386 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EF174273262362E400DE8386 /* libc++.tbd */; };
 		EF1742772623630C00DE8386 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF1742762623630C00DE8386 /* AudioToolbox.framework */; };
 		EF17427C26236D7E00DE8386 /* MameDraw.m in Sources */ = {isa = PBXBuildFile; fileRef = EF17427B26236D7E00DE8386 /* MameDraw.m */; };
-		EF5184B32627E75400BB4B7C /* libmame-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EF5184B22627E75400BB4B7C /* libmame-ios.a */; };
 		EF5184B62627FA5C00BB4B7C /* MameKeyCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF5184B52627FA5C00BB4B7C /* MameKeyCode.swift */; };
 		EFA8FCA226290F6B0003615D /* MameKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA8FCA126290F6B0003615D /* MameKeyboard.swift */; };
+		EFE0036A26448F3E00E42246 /* libmame-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EFE0036926448F3E00E42246 /* libmame-ios.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		EF1628762627E3C100E2B2AB /* libmame.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = libmame.h; path = "../../MAME4iOS/src/osd/droid-ios/libmame.h"; sourceTree = "<group>"; };
-		EF1628782627E59F00E2B2AB /* libmame-ios.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libmame-ios.a"; path = "../MAME4iOS/libmame-ios.a"; sourceTree = "<group>"; };
 		EF1741FA262134CB00DE8386 /* IOSMAME.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IOSMAME.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF17423C262214E700DE8386 /* MameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MameViewController.swift; sourceTree = "<group>"; };
 		EF17424D262215EA00DE8386 /* MetalViewShaders.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetalViewShaders.h; sourceTree = "<group>"; };
@@ -33,15 +31,15 @@
 		EF174259262216D000DE8386 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EF17425A262216D000DE8386 /* Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
 		EF17425B262216D000DE8386 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		EF17426F262360B900DE8386 /* libmame.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmame.a; path = IOSMAME/libmame.a; sourceTree = "<group>"; };
 		EF174273262362E400DE8386 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		EF1742762623630C00DE8386 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		EF17427A26236D5000DE8386 /* MameDraw.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MameDraw.h; sourceTree = "<group>"; };
 		EF17427B26236D7E00DE8386 /* MameDraw.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MameDraw.m; sourceTree = "<group>"; };
-		EF5184B22627E75400BB4B7C /* libmame-ios.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libmame-ios.a"; sourceTree = "<group>"; };
 		EF5184B52627FA5C00BB4B7C /* MameKeyCode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MameKeyCode.swift; sourceTree = "<group>"; };
 		EFA8FC9F2628E1910003615D /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		EFA8FCA126290F6B0003615D /* MameKeyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MameKeyboard.swift; sourceTree = "<group>"; };
+		EFE0036826448F0000E42246 /* libmame.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = libmame.h; sourceTree = SOURCE_ROOT; };
+		EFE0036926448F3E00E42246 /* libmame-ios.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libmame-ios.a"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -49,7 +47,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EF5184B32627E75400BB4B7C /* libmame-ios.a in Frameworks */,
+				EFE0036A26448F3E00E42246 /* libmame-ios.a in Frameworks */,
 				EF1742772623630C00DE8386 /* AudioToolbox.framework in Frameworks */,
 				EF174274262362E400DE8386 /* libc++.tbd in Frameworks */,
 			);
@@ -96,7 +94,7 @@
 		EF174257262216D000DE8386 /* IOSMAME */ = {
 			isa = PBXGroup;
 			children = (
-				EF1628762627E3C100E2B2AB /* libmame.h */,
+				EFE0036826448F0000E42246 /* libmame.h */,
 				EF174258262216D000DE8386 /* LaunchScreen.storyboard */,
 				EF174259262216D000DE8386 /* Assets.xcassets */,
 				EF17425A262216D000DE8386 /* Bridging-Header.h */,
@@ -108,11 +106,9 @@
 		EF17426E262360B900DE8386 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				EF1628782627E59F00E2B2AB /* libmame-ios.a */,
-				EF5184B22627E75400BB4B7C /* libmame-ios.a */,
+				EFE0036926448F3E00E42246 /* libmame-ios.a */,
 				EF1742762623630C00DE8386 /* AudioToolbox.framework */,
 				EF174273262362E400DE8386 /* libc++.tbd */,
-				EF17426F262360B900DE8386 /* libmame.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

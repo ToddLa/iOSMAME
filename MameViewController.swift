@@ -140,6 +140,11 @@ class MameViewController: UIViewController {
             let chan = ["ERROR", "WARNING", "INFO", "DEBUG", "VERBOSE"]
             print("[\(chan[Int(channel)])]: \(String(cString:text))", terminator:"")
         }
+        
+        let version_num = myosd_get(Int32(MYOSD_VERSION))
+        let version_str = String(cString:UnsafePointer<CChar>(bitPattern:myosd_get(Int32(MYOSD_VERSION_STRING)))!)
+
+        print("MAME VERSION[\(version_num)]: \"\(version_str)\"")
 
         while true {
             myosd_main(0, nil, &callbacks, MemoryLayout<myosd_callbacks>.size)
@@ -178,7 +183,7 @@ func set_game_info(games:UnsafeMutablePointer<myosd_game_info>?, count:Int32) {
 func game_info(info:UnsafeMutablePointer<myosd_game_info>?) {
     autoreleasepool {
         guard let game = info?.pointee, game.name != nil, game.description != nil else {return}
-        print("GAME: \(String(cString:game.name).padding(toLength:16, withPad:" ", startingAt:0)) \(String(cString:game.description))")
+        print("GAME: \(String(cString:game.name)): \"\(String(cString:game.description))\"")
     }
 }
 
