@@ -12,6 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface MetalView (MameDraw)
 
 - (void)drawMamePrimitives:(myosd_render_primitive*)prim_list size:(CGSize)size;
+- (void)dumpMamePrimitives:(myosd_render_primitive*)prim_list size:(CGSize)size;
 
 @end
 

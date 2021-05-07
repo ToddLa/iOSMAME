@@ -205,4 +205,62 @@ static void load_texture_prim(id<MTLTexture> texture, myosd_render_primitive* pr
     [self drawEnd];
 }
 
+- (void)dumpMamePrimitives:(myosd_render_primitive*)prim_list size:(CGSize)size {
+    
+    static char* texture_format_name[] = {"UNDEFINED", "PAL16", "PALA16", "555", "RGB", "ARGB", "YUV16"};
+    static char* blend_mode_name[] = {"NONE", "ALPHA", "MUL", "ADD"};
+    
+    int count = 0;
+    for (myosd_render_primitive* prim = prim_list; prim != NULL; prim = prim->next)
+        count++;
+    
+    NSLog(@"Draw Screen: %dx%d (%d prims)",(int)size.width,(int)size.height, count);
+    
+    for (myosd_render_primitive* prim = prim_list; prim != NULL; prim = prim->next) {
+        
+        NSParameterAssert(prim->type == RENDER_PRIMITIVE_LINE || prim->type == RENDER_PRIMITIVE_QUAD);
+        NSParameterAssert(prim->blendmode <= BLENDMODE_ADD);
+        NSParameterAssert(prim->texformat <= TEXFORMAT_YUY16);
+        NSParameterAssert(prim->unused == 0);
+        
+        int blend = prim->blendmode;
+        int fmt = prim->texformat;
+        int aa = prim->antialias;
+        int screen = prim->screentex;
+        int orient = prim->texorient;
+        int wrap = prim->texwrap;
+        
+        if (prim->type == RENDER_PRIMITIVE_LINE) {
+            NSLog(@"    LINE (%.0f,%.0f) -> (%.0f,%.0f) (%0.2f,%0.2f,%0.2f,%0.2f) %f %s%s%s",
+                  prim->bounds_x0, prim->bounds_y0, prim->bounds_x1, prim->bounds_y1,
+                  prim->color_r, prim->color_g, prim->color_b, prim->color_a,
+                  prim->width, blend_mode_name[blend], aa ? " AA" : "", screen ? " SCREEN" : "");
+        }
+        else if (prim->type == RENDER_PRIMITIVE_QUAD && prim->texture_base == NULL) {
+            NSLog(@"    QUAD [%.0f,%.0f,%.0f,%.0f] (%0.2f,%0.2f,%0.2f,%0.2f) %s%s",
+                  prim->bounds_x0, prim->bounds_y0, prim->bounds_x1 - prim->bounds_x0, prim->bounds_y1 - prim->bounds_y0,
+                  prim->color_r, prim->color_g, prim->color_b, prim->color_a,
+                  blend_mode_name[blend], aa ? " AA" : "");
+        }
+        else if (prim->type == RENDER_PRIMITIVE_QUAD) {
+            NSLog(@"    TEXQ [%.0f,%.0f,%.0f,%.0f] [(%.0f,%.0f),(%.0f,%.0f),(%.0f,%.0f),(%.0f,%.0f)] %s %dx%d (%lX:%d) %s%s%s%s%s%s%s%s",
+                  prim->bounds_x0, prim->bounds_y0, prim->bounds_x1 - prim->bounds_x0, prim->bounds_y1 - prim->bounds_y0,
+                  prim->texcoords[0].u, prim->texcoords[0].v,
+                  prim->texcoords[1].u, prim->texcoords[1].v,
+                  prim->texcoords[2].u, prim->texcoords[2].v,
+                  prim->texcoords[3].u, prim->texcoords[3].v,
+                  blend_mode_name[blend],
+                  prim->texture_width, prim->texture_height, (intptr_t)prim->texture_base, prim->texture_seqid,
+                  texture_format_name[fmt],
+                  prim->texture_palette ? " PALLETE" : "",
+                  aa ? " AA" : "",
+                  screen ? " SCREEN" : "", wrap ? " WRAP" : "",
+                  (orient & ORIENTATION_FLIP_X) ? " FLIPX" : "",
+                  (orient & ORIENTATION_FLIP_Y) ? " FLIPY" : "",
+                  (orient & ORIENTATION_SWAP_XY) ? " SWAPXY" : ""
+                  );
+        }
+    }
+}
+
 @end

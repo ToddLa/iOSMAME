@@ -14,7 +14,10 @@ class MameViewController: UIViewController {
     
     let keyboard = MameKeyboard()
     var keyboardConnected = false
-    var keyboardHasEscapeKey:Bool?
+    
+    var dumpFrame = false
+    var contentMode = UIView.ContentMode.scaleAspectFill
+    var contentScale = 1.0
     
     let mameView = MetalView()
     var mameKeyboard = [UInt8](repeating:0, count:256)
@@ -45,19 +48,35 @@ class MameViewController: UIViewController {
     
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        var rect = view.bounds
-        if mameScreenSize != .zero {
-            rect = rect.inset(by:self.view.safeAreaInsets)
-            //rect = AVMakeRect(aspectRatio:mameScreenSize, insideRect:rect)
-            let scale = min(rect.width / mameScreenSize.width, rect.height / mameScreenSize.height)
-            let w = floor(mameScreenSize.width * scale)
-            let h = floor(mameScreenSize.height * scale)
-            rect.origin.x = rect.origin.x + floor((rect.width - w) / 2)
-            if keyboardConnected {
-                rect.origin.y = rect.origin.y + floor((rect.height - h) / 2)
-            }
-            rect.size = CGSize(width:w, height:h)
+        var rect = view.bounds.inset(by:self.view.safeAreaInsets)
+        var size = CGSize.zero
+        
+        if mameScreenSize == .zero || contentMode == .scaleToFill {
+            size = rect.size
         }
+        else if contentMode == .scaleAspectFill {
+            let scale = min(rect.width / mameScreenSize.width, rect.height / mameScreenSize.height)
+            size.width = floor(mameScreenSize.width * scale)
+            size.height = floor(mameScreenSize.height * scale)
+        }
+        else if contentMode == .scaleAspectFit {
+            // same as .scaleAspectFill, but only integer scale factor
+            let scale = floor(min(rect.width * UIScreen.main.scale / mameScreenSize.width, rect.height * UIScreen.main.scale / mameScreenSize.height))
+            size.width = floor(mameScreenSize.width * scale) / UIScreen.main.scale
+            size.height = floor(mameScreenSize.height * scale) / UIScreen.main.scale
+        }
+        else {
+            let scale = CGFloat(contentScale)
+            size.width = floor(mameScreenSize.width * scale) / UIScreen.main.scale
+            size.height = floor(mameScreenSize.height * scale) / UIScreen.main.scale
+        }
+        
+        rect.origin.x = rect.origin.x + floor((rect.width - size.width) * UIScreen.main.scale / 2) / UIScreen.main.scale
+        if keyboardConnected {
+            rect.origin.y = rect.origin.y + floor((rect.height - size.height) * UIScreen.main.scale / 2) / UIScreen.main.scale
+        }
+        rect.size = size
+    
         mameView.frame = rect
         mameView.textureCacheFlush()
         
@@ -84,35 +103,56 @@ class MameViewController: UIViewController {
         mameKeyboard[Int(key.rawValue)] = pressed ? 1 : 0
     }
 
-    func mameKey(_ hid:UIKeyboardHIDUsage?, _ pressed:Bool) {
-        if let hid = hid, var key = myosd_keycode(hid) {
-            // none of Apples "smart" keyboards have ESC keys, so use TILDE
-            if keyboardHasEscapeKey == nil && key == MYOSD_KEY_ESC {
-                keyboardHasEscapeKey = true
-            }
-            if keyboardHasEscapeKey != true && key == MYOSD_KEY_TILDE {
-                key = MYOSD_KEY_ESC
-            }
+    func mameKey(_ hid:UIKeyboardHIDUsage, _ pressed:Bool) {
+        if let key = myosd_keycode(hid) {
             mameKey(key, pressed)
         }
+    }
+    
+    func commandKey(_ key:String) {
+        switch (key) {
+        case "d":
+            dumpFrame = true
+        case "\r":
+            let modes = [UIView.ContentMode.center, .scaleAspectFit, .scaleAspectFill, .scaleToFill]
+            let idx = modes.firstIndex(of:contentMode) ?? 0
+            contentMode = modes[(idx + 1) % modes.count]
+        case "0":
+            contentMode = .scaleAspectFit
+            contentScale = 1.0
+        case "1"..."9":
+            contentMode = .center
+            contentScale = Double(key) ?? 1.0
+        case "=":
+            contentMode = .center
+            contentScale = min(16.0, contentScale + 1.0)
+        case "-":
+            contentMode = .center
+            contentScale = max(1.0, contentScale - 1.0)
+        default:
+            return
+        }
+        view.setNeedsLayout()
     }
 
     override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
         super.pressesBegan(presses, with:event)
-        mameKey(presses.first?.key?.keyCode, true)
+        guard let key = presses.first?.key else {return}
+        mameKey(key.keyCode, true)
     }
     override func pressesEnded(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
         super.pressesEnded(presses, with:event)
-        mameKey(presses.first?.key?.keyCode, false)
+        guard let key = presses.first?.key else {return}
+        mameKey(key.keyCode, false)
+        if key.modifierFlags.contains(.command) {
+            commandKey(key.characters)
+        }
     }
     
     @objc
     func keyboardChange() {
         print("KEYBOARD: \(GCKeyboard.coalesced?.vendorName ?? "None")")
         keyboardConnected = GCKeyboard.coalesced != nil
-        //TODO: how to detect a "smart" keyboard without an Escape key?
-        //keyboardHasEscapeKey = GCKeyboard.coalesced?.keyboardInput?["Escape"] != nil
-        keyboardHasEscapeKey = nil
         view.setNeedsLayout()
     }
 
@@ -130,11 +170,19 @@ class MameViewController: UIViewController {
         }
 
         var callbacks = myosd_callbacks()
+        
         callbacks.video_init = video_init
         callbacks.video_draw = video_draw
+        callbacks.video_exit = video_exit
+        
+        callbacks.input_init = input_init
         callbacks.input_poll = input_poll
-        callbacks.set_game_info = set_game_info
-        callbacks.game_init = game_info
+        callbacks.input_exit = input_exit
+        
+        callbacks.game_init = game_init
+        callbacks.game_exit = game_exit
+
+        callbacks.set_game_info = set_game_list
 
         callbacks.output_text = {(channel:Int32, text:UnsafePointer<Int8>!) -> Void in
             let chan = ["ERROR", "WARNING", "INFO", "DEBUG", "VERBOSE"]
@@ -155,22 +203,37 @@ class MameViewController: UIViewController {
 // MARK: LIBMAME callbacks
 
 func video_init(width:Int32, height:Int32) {
+    print("VIDEO INIT \(width)x\(height)")
     MameViewController.shared?.mameScreenSize = CGSize(width:Int(width), height: Int(height))
 }
-
 func video_draw(prims:UnsafeMutablePointer<myosd_render_primitive>!, width:Int32, height:Int32) {
     autoreleasepool {
-        MameViewController.shared?.mameView.drawMamePrimitives(prims, size: CGSize(width:Int(width), height: Int(height)))
+        guard let vc = MameViewController.shared else {return}
+        if vc.dumpFrame {
+            MameViewController.shared?.mameView.dumpMamePrimitives(prims, size: CGSize(width:Int(width), height: Int(height)))
+            vc.dumpFrame = false
+        }
+        vc.mameView.drawMamePrimitives(prims, size: CGSize(width:Int(width), height: Int(height)))
     }
 }
+func video_exit() {
+    print("VIDEO EXIT")
+}
 
+
+func input_init(input:UnsafeMutablePointer<myosd_input_state>!, size:Int) {
+    print("INPUT INIT")
+}
 func input_poll(input:UnsafeMutablePointer<myosd_input_state>!, size:Int) {
     guard var keyboard = MameViewController.shared?.mameKeyboard else {return}
     memcpy(&input.pointee.keyboard, &keyboard, 256)
     MameViewController.shared?.inMenu = input.pointee.input_mode == MYOSD_INPUT_MODE_UI.rawValue
 }
+func input_exit() {
+    print("INPUT EXIT")
+}
 
-func set_game_info(games:UnsafeMutablePointer<myosd_game_info>?, count:Int32) {
+func set_game_list(games:UnsafeMutablePointer<myosd_game_info>?, count:Int32) {
     autoreleasepool {
         let games = Array(UnsafeBufferPointer(start:games, count:Int(count)))
             .filter({$0.name != nil && $0.description != nil && $0.type == MYOSD_GAME_TYPE_ARCADE.rawValue})
@@ -180,12 +243,20 @@ func set_game_info(games:UnsafeMutablePointer<myosd_game_info>?, count:Int32) {
     }
 }
 
-func game_info(info:UnsafeMutablePointer<myosd_game_info>?) {
+func game_init(info:UnsafeMutablePointer<myosd_game_info>?) {
     autoreleasepool {
         guard let game = info?.pointee, game.name != nil, game.description != nil else {return}
         print("GAME: \(String(cString:game.name)): \"\(String(cString:game.description))\"")
+        print("    PARENT: \(String(cString:game.parent))")
+        print("    SOURCE: \(String(cString:game.source_file))")
+        print("      YEAR: \(String(cString:game.year))")
+        print("       MFG: \(String(cString:game.manufacturer))")
     }
 }
+func game_exit() {
+    print("GAME EXIT")
+}
+
 
 
 // MARK: AppDelegate
