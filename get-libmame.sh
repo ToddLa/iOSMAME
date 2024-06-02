@@ -15,7 +15,7 @@
 ##
 
 if [ "$1" == "" ]; then
-    echo "USAGE: $0 [ios | tvos | mac | all] [source]"
+    $0 ios $2
     exit
 fi
 
@@ -45,3 +45,6 @@ if [ -f "../MAME4iOS/$LIBMAME" ]; then
     cp "../MAME4iOS/$LIBMAME" .
     exit
 fi
+
+echo "USAGE: $0 [ios | tvos | mac | all] [source]"
+

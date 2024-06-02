@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EF12ADAB2C0B9CB400B72895 /* Debug.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF12ADAA2C0B9CB400B72895 /* Debug.swift */; };
 		EF17423D262214E700DE8386 /* MameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF17423C262214E700DE8386 /* MameViewController.swift */; };
 		EF174251262215EA00DE8386 /* MetalView.m in Sources */ = {isa = PBXBuildFile; fileRef = EF17424E262215EA00DE8386 /* MetalView.m */; };
 		EF174252262215EA00DE8386 /* MetalViewShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = EF17424F262215EA00DE8386 /* MetalViewShaders.metal */; };
@@ -21,7 +22,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		EF1741FA262134CB00DE8386 /* IOSMAME.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IOSMAME.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		EF12ADAA2C0B9CB400B72895 /* Debug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debug.swift; sourceTree = "<group>"; };
+		EF1741FA262134CB00DE8386 /* iOSMAME.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOSMAME.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF17423C262214E700DE8386 /* MameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MameViewController.swift; sourceTree = "<group>"; };
 		EF17424D262215EA00DE8386 /* MetalViewShaders.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetalViewShaders.h; sourceTree = "<group>"; };
 		EF17424E262215EA00DE8386 /* MetalView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MetalView.m; sourceTree = "<group>"; };
@@ -65,6 +67,7 @@
 				EFA8FCA126290F6B0003615D /* MameKeyboard.swift */,
 				EF17427A26236D5000DE8386 /* MameDraw.h */,
 				EF17427B26236D7E00DE8386 /* MameDraw.m */,
+				EF12ADAA2C0B9CB400B72895 /* Debug.swift */,
 				EF174257262216D000DE8386 /* IOSMAME */,
 				EF17424C262215EA00DE8386 /* MetalView */,
 				EF1741FB262134CB00DE8386 /* Products */,
@@ -75,7 +78,7 @@
 		EF1741FB262134CB00DE8386 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				EF1741FA262134CB00DE8386 /* IOSMAME.app */,
+				EF1741FA262134CB00DE8386 /* iOSMAME.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -116,9 +119,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		EF1741F9262134CB00DE8386 /* IOSMAME */ = {
+		EF1741F9262134CB00DE8386 /* iOSMAME */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = EF17420E262134CC00DE8386 /* Build configuration list for PBXNativeTarget "IOSMAME" */;
+			buildConfigurationList = EF17420E262134CC00DE8386 /* Build configuration list for PBXNativeTarget "iOSMAME" */;
 			buildPhases = (
 				EF1741F6262134CB00DE8386 /* Sources */,
 				EF1741F7262134CB00DE8386 /* Frameworks */,
@@ -128,9 +131,9 @@
 			);
 			dependencies = (
 			);
-			name = IOSMAME;
+			name = iOSMAME;
 			productName = IOSMAME;
-			productReference = EF1741FA262134CB00DE8386 /* IOSMAME.app */;
+			productReference = EF1741FA262134CB00DE8386 /* iOSMAME.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -161,7 +164,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				EF1741F9262134CB00DE8386 /* IOSMAME */,
+				EF1741F9262134CB00DE8386 /* iOSMAME */,
 			);
 		};
 /* End PBXProject section */
@@ -188,6 +191,7 @@
 				EF17423D262214E700DE8386 /* MameViewController.swift in Sources */,
 				EF5184B62627FA5C00BB4B7C /* MameKeyCode.swift in Sources */,
 				EFA8FCA226290F6B0003615D /* MameKeyboard.swift in Sources */,
+				EF12ADAB2C0B9CB400B72895 /* Debug.swift in Sources */,
 				EF17427C26236D7E00DE8386 /* MameDraw.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -246,7 +250,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -301,7 +305,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -318,9 +322,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2024.1;
 				DEVELOPMENT_TEAM = 8RUN83V8CA;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = IOSMAME/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.arcade-games";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -331,7 +337,8 @@
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/../MAME4iOS",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.toddla.IOSMAME;
+				MARKETING_VERSION = 2024.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.toddla.iosmame;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "IOSMAME/Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -347,9 +354,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2024.1;
 				DEVELOPMENT_TEAM = 8RUN83V8CA;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = IOSMAME/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.arcade-games";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -360,7 +369,8 @@
 					"$(PROJECT_DIR)",
 					"$(PROJECT_DIR)/../MAME4iOS",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.toddla.IOSMAME;
+				MARKETING_VERSION = 2024.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.toddla.iosmame;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "IOSMAME/Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
@@ -380,7 +390,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		EF17420E262134CC00DE8386 /* Build configuration list for PBXNativeTarget "IOSMAME" */ = {
+		EF17420E262134CC00DE8386 /* Build configuration list for PBXNativeTarget "iOSMAME" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				EF17420F262134CC00DE8386 /* Debug */,

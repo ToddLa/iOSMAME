@@ -8,13 +8,20 @@
 import UIKit
 import GameController
 
-class MameViewController: UIViewController {
+class MameViewController: UIViewController, UIDocumentPickerDelegate {
     
     static var shared:MameViewController?
     
     let keyboard = MameKeyboard()
+    let menu = MameKey("ellipsis.circle")
     var keyboardConnected = false
+    var mouseConnected = false
     
+    let mouse_lock = NSLock()
+    var mouse_x = Float.zero
+    var mouse_y = Float.zero
+    var mouse_status:UInt = 0
+
     var dumpFrame = false
     var contentMode = UIView.ContentMode.scaleAspectFill
     var contentScale = 1.0
@@ -35,22 +42,46 @@ class MameViewController: UIViewController {
         self.view.backgroundColor = .black
         self.view.addSubview(mameView)
         mameView.backgroundColor = .systemOrange
-        mameView.showFPS = true
+        mameView.showFPS = false
 
-        keyboard.tintColor = .systemYellow
+        // touch-keyboard
+        keyboard.tintColor = .systemBlue
         self.view.addSubview(keyboard)
+        
+        // app-menu
+        menu.tintColor = .systemBlue
+        menu.frame = CGRect(x:0, y:0, width:48, height:48)
+        menu.alpha = 0.667
+        menu.menu = makeMenu()
+        menu.showsMenuAsPrimaryAction = true
+        self.view.addSubview(menu)
 
-        NotificationCenter.default.addObserver(self, selector:#selector(keyboardChange), name:.GCKeyboardDidConnect, object: nil)
-        NotificationCenter.default.addObserver(self, selector:#selector(keyboardChange), name:.GCKeyboardDidDisconnect, object: nil)
+        NotificationCenter.default.addObserver(self, selector:#selector(deviceChange), name:.GCKeyboardDidConnect, object: nil)
+        NotificationCenter.default.addObserver(self, selector:#selector(deviceChange), name:.GCKeyboardDidDisconnect, object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector:#selector(deviceChange), name:.GCMouseDidConnect, object: nil)
+        NotificationCenter.default.addObserver(self, selector:#selector(deviceChange), name:.GCMouseDidDisconnect, object: nil)
         
         Thread(target:self, selector: #selector(backgroundThread), object:nil).start()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        self.becomeFirstResponder()
     }
     
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         var rect = view.bounds.inset(by:self.view.safeAreaInsets)
         var size = CGSize.zero
-        
+
+        // pin menu to upper-right
+        menu.frame.origin.x = rect.maxX - menu.bounds.width - 4.0
+        menu.frame.origin.y = rect.minY + 4.0
+
+        // tell MAME our screen size, it might re-set the video mode
+        myosd_set(Int32(MYOSD_DISPLAY_WIDTH), Int(rect.size.width));
+        myosd_set(Int32(MYOSD_DISPLAY_HEIGHT), Int(rect.size.height));
+
         if mameScreenSize == .zero || contentMode == .scaleToFill {
             size = rect.size
         }
@@ -81,6 +112,9 @@ class MameViewController: UIViewController {
         mameView.textureCacheFlush()
         
         let h = min(view.bounds.height * 0.333, view.bounds.width * 0.667)
+        //let landscape = view.bounds.height < view.bounds.width
+        //let h = view.bounds.height * (landscape ? 0.500 : 0.333)
+
         keyboard.frame = CGRect(x:0, y:view.bounds.height - h, width:view.bounds.width, height:h)
         keyboard.alpha = keyboardConnected ? 0.333 : 0.667
     }
@@ -91,6 +125,83 @@ class MameViewController: UIViewController {
     override var prefersHomeIndicatorAutoHidden: Bool {
         return true
     }
+
+    // MARK: menu
+    
+    private func makeMenu() -> UIMenu {
+        let title = (Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String) ??
+                    (Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String) ?? ""
+        
+        let menu = UIMenu(title:title, children: [
+            UIAction(title: "Add ROM...", image: UIImage(systemName: "plus")) { action in
+                let picker = UIDocumentPickerViewController(forOpeningContentTypes: [.zip])
+                picker.modalPresentationStyle = .formSheet
+                picker.delegate = self
+                picker.allowsMultipleSelection = true
+                self.present(picker, animated: true)
+            },
+            UIAction(title: "Show Files...", image: UIImage(systemName: "folder")) { action in
+                let docs = FileManager.default.urls(for:.documentDirectory, in:.userDomainMask).first!
+                let roms = docs.appendingPathComponent("roms")
+                let url = URL(string: "shareddocuments://" + roms.path)!
+                UIApplication.shared.open(url) { success in
+                    print("OPEN: \(url) \(success)")
+                    if !success {
+                        UIApplication.shared.open(roms)
+                    }
+                }
+            },
+            UIAction(title: "Info", image: UIImage(systemName: "info.circle")) { action in
+                self.showInfo()
+            },
+        ])
+        return menu
+    }
+    
+    // MARK: UIDocumentPickerDelegate
+    
+    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+        let docs = FileManager.default.urls(for:.documentDirectory, in:.userDomainMask).first!
+        let roms = docs.appendingPathComponent("roms")
+        for url in urls {
+            let dest = roms.appending(path:url.lastPathComponent)
+            print("COPY: \(url)")
+            print("  TO: \(dest)")
+            if url.startAccessingSecurityScopedResource() {
+                try? FileManager.default.copyItem(at:url, to:dest)
+                url.stopAccessingSecurityScopedResource()
+            }
+        }
+        // force a exit and re-load/scan of ROMs
+        mameKey(MYOSD_KEY_EXIT, true)
+    }
+    
+    // MARK: INFO/HELP
+    
+    func showInfo() {
+        let app_name = (Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String) ??
+                       (Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String) ?? ""
+        
+        let app_version = (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String) ??
+                          (Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String) ?? "Unknown"
+        
+        let mame_version_num = myosd_get(Int32(MYOSD_VERSION))
+
+         let text = """
+                   Version \(app_version) (MAME 0.\(mame_version_num))
+                   
+                   Simple port of MAME to iOS
+                   
+                   use `Add ROM...` to add your own custom romsets.
+                   
+                   use touch contorls ◀ ▶ ▲ ▼ Ⓐ Ⓑ Ⓧ Ⓨ to select romset and play.
+                   """
+        
+        let alert = UIAlertController(title:app_name, message:text, preferredStyle:.alert)
+        alert.addAction(UIAlertAction(title: "Done", style: .default, handler:nil))
+        self.present(alert, animated: true)
+    }
+
     
     // MARK: state
     
@@ -134,14 +245,22 @@ class MameViewController: UIViewController {
         }
         view.setNeedsLayout()
     }
+    
+    override var canBecomeFirstResponder: Bool {
+        return true
+    }
 
     override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-        super.pressesBegan(presses, with:event)
         guard let key = presses.first?.key else {return}
         mameKey(key.keyCode, true)
     }
+    override func pressesChanged(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+    }
+    override func pressesCancelled(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+        guard let key = presses.first?.key else {return}
+        mameKey(key.keyCode, false)
+    }
     override func pressesEnded(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-        super.pressesEnded(presses, with:event)
         guard let key = presses.first?.key else {return}
         mameKey(key.keyCode, false)
         if key.modifierFlags.contains(.command) {
@@ -150,10 +269,30 @@ class MameViewController: UIViewController {
     }
     
     @objc
-    func keyboardChange() {
-        print("KEYBOARD: \(GCKeyboard.coalesced?.vendorName ?? "None")")
-        keyboardConnected = GCKeyboard.coalesced != nil
-        view.setNeedsLayout()
+    func deviceChange() {
+        
+        if (keyboardConnected != (GCKeyboard.coalesced != nil)) {
+            print("KEYBOARD: \(GCKeyboard.coalesced?.vendorName ?? "None")")
+            keyboardConnected = GCKeyboard.coalesced != nil
+            view.setNeedsLayout()
+        }
+        
+        mouseConnected = (GCMouse.mice().count != 0);
+        for mouse in GCMouse.mice() {
+            print("MOUSE: \(mouse.vendorName ?? "None")")
+            mouse.mouseInput?.mouseMovedHandler = {(_, delta_x:Float, delta_y:Float) -> Void in
+                print("MOUSE MOVE: \(delta_x) \(delta_y)")
+                self.mouse_lock.lock()
+                self.mouse_x += delta_x
+                self.mouse_y += delta_y
+                self.mouse_lock.unlock()
+
+            }
+            mouse.mouseInput?.leftButton.pressedChangedHandler = { (_, _, pressed:Bool) -> Void in
+                print("MOUSE LBUTTON: \(pressed)")
+                self.mouse_status = UInt(pressed ? MYOSD_A.rawValue : 0)
+            }
+        }
     }
 
     // MARK: MAME background thread
@@ -168,7 +307,18 @@ class MameViewController: UIViewController {
             let url = docs.appendingPathComponent(dir, isDirectory:true)
             try? FileManager.default.createDirectory(at:url, withIntermediateDirectories:false)
         }
-
+        
+        // create a default UI.INI on first run
+        let ui_url = docs.appending(path:"ui.ini")
+        if !FileManager.default.fileExists(atPath:ui_url.path) {
+            let str = """
+                      hide_main_panel           3
+                      last_used_filter          Available
+                      hide_romless              1
+                      """
+            FileManager.default.createFile(atPath:ui_url.path, contents:str.data(using:.utf8))
+        }
+        
         var callbacks = myosd_callbacks()
         
         callbacks.video_init = video_init
@@ -182,7 +332,7 @@ class MameViewController: UIViewController {
         callbacks.game_init = game_init
         callbacks.game_exit = game_exit
 
-        callbacks.set_game_info = set_game_list
+        callbacks.game_list = set_game_list
 
         callbacks.output_text = {(channel:Int32, text:UnsafePointer<Int8>!) -> Void in
             let chan = ["ERROR", "WARNING", "INFO", "DEBUG", "VERBOSE"]
@@ -202,7 +352,7 @@ class MameViewController: UIViewController {
 
 // MARK: LIBMAME callbacks
 
-func video_init(width:Int32, height:Int32) {
+func video_init(width:Int32, height:Int32, min_width:Int32, min_height:Int32) {
     print("VIDEO INIT \(width)x\(height)")
     MameViewController.shared?.mameScreenSize = CGSize(width:Int(width), height: Int(height))
 }
@@ -223,11 +373,22 @@ func video_exit() {
 
 func input_init(input:UnsafeMutablePointer<myosd_input_state>!, size:Int) {
     print("INPUT INIT")
+    guard let vc = MameViewController.shared else {return}
+    memset(&vc.mameKeyboard, 0, 256)
 }
 func input_poll(input:UnsafeMutablePointer<myosd_input_state>!, size:Int) {
-    guard var keyboard = MameViewController.shared?.mameKeyboard else {return}
-    memcpy(&input.pointee.keyboard, &keyboard, 256)
-    MameViewController.shared?.inMenu = input.pointee.input_mode == MYOSD_INPUT_MODE_UI.rawValue
+    guard let vc = MameViewController.shared else {return}
+    memcpy(&input.pointee.keyboard, &vc.mameKeyboard, 256)
+    
+    vc.mouse_lock.lock()
+    input.pointee.mouse_x.0 = vc.mouse_x * 512.0
+    input.pointee.mouse_y.0 = vc.mouse_y * 512.0
+    input.pointee.mouse_status.0 = vc.mouse_status
+    vc.mouse_x = 0.0
+    vc.mouse_y = 0.0
+    vc.mouse_lock.unlock()
+    
+    MameViewController.shared?.inMenu = input.pointee.input_mode == MYOSD_INPUT_MODE_MENU.rawValue
 }
 func input_exit() {
     print("INPUT EXIT")
@@ -236,9 +397,15 @@ func input_exit() {
 func set_game_list(games:UnsafeMutablePointer<myosd_game_info>?, count:Int32) {
     autoreleasepool {
         let games = Array(UnsafeBufferPointer(start:games, count:Int(count)))
-            .filter({$0.name != nil && $0.description != nil && $0.type == MYOSD_GAME_TYPE_ARCADE.rawValue})
+            .filter({$0.name != nil && $0.description != nil})
         for game in games {
-            print("\(String(cString:game.name).padding(toLength:16, withPad:" ", startingAt:0)) \(String(cString:game.description))")
+            let game_type = game.type == MYOSD_GAME_TYPE_ARCADE.rawValue ? "Arcade" :
+                            game.type == MYOSD_GAME_TYPE_CONSOLE.rawValue ? "Console" :
+                            game.type == MYOSD_GAME_TYPE_COMPUTER.rawValue ? "Computer" : "Other"
+                print("\(String(cString:game.name).padding(toLength:16, withPad:" ", startingAt:0)) \(game_type.padding(toLength:8, withPad:" ", startingAt:0)) \(String(cString:game.description))")
+            if (game.software_list != nil) {
+                print("    SOFTWARE: \(String(cString:game.software_list))")
+            }
         }
     }
 }
@@ -256,8 +423,6 @@ func game_init(info:UnsafeMutablePointer<myosd_game_info>?) {
 func game_exit() {
     print("GAME EXIT")
 }
-
-
 
 // MARK: AppDelegate
 
