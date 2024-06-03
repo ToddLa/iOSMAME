@@ -79,8 +79,8 @@ class MameViewController: UIViewController, UIDocumentPickerDelegate {
         menu.frame.origin.y = rect.minY + 4.0
 
         // tell MAME our screen size, it might re-set the video mode
-        myosd_set(Int32(MYOSD_DISPLAY_WIDTH), Int(rect.size.width));
-        myosd_set(Int32(MYOSD_DISPLAY_HEIGHT), Int(rect.size.height));
+        myosd_set(Int32(MYOSD_DISPLAY_WIDTH), Int(rect.size.width * UIScreen.main.scale));
+        myosd_set(Int32(MYOSD_DISPLAY_HEIGHT), Int(rect.size.height * UIScreen.main.scale));
 
         if mameScreenSize == .zero || contentMode == .scaleToFill {
             size = rect.size

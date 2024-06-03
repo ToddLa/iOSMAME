@@ -1,7 +1,6 @@
 .DS_Store
 project.xcworkspace
-libmame*
-libmame-dist/*
+libmame-*
 xcuserdata
 obj
 .vscode/*
