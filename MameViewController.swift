@@ -78,10 +78,21 @@ class MameViewController: UIViewController, UIDocumentPickerDelegate {
         menu.frame.origin.x = rect.maxX - menu.bounds.width - 4.0
         menu.frame.origin.y = rect.minY + 4.0
 
-        // tell MAME our screen size, it might re-set the video mode
-        myosd_set(Int32(MYOSD_DISPLAY_WIDTH), Int(rect.size.width * UIScreen.main.scale));
-        myosd_set(Int32(MYOSD_DISPLAY_HEIGHT), Int(rect.size.height * UIScreen.main.scale));
+        // tell MAME our screen size, it might re-set the video mode for hires artwork and fonts
+        var screen_w = Int(rect.size.width * UIScreen.main.scale)
+        var screen_h = Int(rect.size.height * UIScreen.main.scale)
 
+        if !inGame {
+            // use a (small) fixed size for the MAME UX, so we dont get tiny fonts.
+            // TODO: maybe use ui.bdf?
+            // TODO: maybe force MAME UX to ignore aspect
+            screen_w = 640
+            screen_h = 480
+        }
+        myosd_set(Int32(MYOSD_DISPLAY_WIDTH), Int(screen_w));
+        myosd_set(Int32(MYOSD_DISPLAY_HEIGHT), Int(screen_h));
+
+        
         if mameScreenSize == .zero || contentMode == .scaleToFill {
             size = rect.size
         }
@@ -206,6 +217,7 @@ class MameViewController: UIViewController, UIDocumentPickerDelegate {
     // MARK: state
     
     var inMenu = false
+    var inGame = false
 
     // MARK: keyboard input
     
@@ -418,10 +430,12 @@ func game_init(info:UnsafeMutablePointer<myosd_game_info>?) {
         print("    SOURCE: \(String(cString:game.source_file))")
         print("      YEAR: \(String(cString:game.year))")
         print("       MFG: \(String(cString:game.manufacturer))")
+        MameViewController.shared?.inGame = true
     }
 }
 func game_exit() {
     print("GAME EXIT")
+    MameViewController.shared?.inGame = false
 }
 
 // MARK: AppDelegate
