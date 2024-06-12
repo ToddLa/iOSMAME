@@ -66,7 +66,12 @@ class MameViewController: UIViewController, UIDocumentPickerDelegate {
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        self.becomeFirstResponder()
+        let docs = FileManager.default.urls(for:.documentDirectory, in:.userDomainMask).first!
+        let roms = docs.appendingPathComponent("roms")
+        let num_roms = FileManager.default.enumerator(atPath:roms.path)?.allObjects.count ?? 0
+        if num_roms == 0 {
+            self.showFirstRunHelp()
+        }
     }
     
     override func viewWillLayoutSubviews() {
@@ -92,7 +97,6 @@ class MameViewController: UIViewController, UIDocumentPickerDelegate {
         myosd_set(Int32(MYOSD_DISPLAY_WIDTH), Int(screen_w));
         myosd_set(Int32(MYOSD_DISPLAY_HEIGHT), Int(screen_h));
 
-        
         if mameScreenSize == .zero || contentMode == .scaleToFill {
             size = rect.size
         }
@@ -131,10 +135,10 @@ class MameViewController: UIViewController, UIDocumentPickerDelegate {
     }
     
     override var prefersStatusBarHidden: Bool {
-        return true
+        return inGame
     }
     override var prefersHomeIndicatorAutoHidden: Bool {
-        return true
+        return inGame
     }
 
     // MARK: menu
@@ -165,6 +169,11 @@ class MameViewController: UIViewController, UIDocumentPickerDelegate {
             UIAction(title: "Info", image: UIImage(systemName: "info.circle")) { action in
                 self.showInfo()
             },
+            /* TODO: no help yet
+            UIAction(title: "Help", image: UIImage(systemName: "questionmark.circle")) { action in
+                self.showHelp()
+            },
+            */
         ])
         return menu
     }
@@ -186,33 +195,6 @@ class MameViewController: UIViewController, UIDocumentPickerDelegate {
         // force a exit and re-load/scan of ROMs
         mameKey(MYOSD_KEY_EXIT, true)
     }
-    
-    // MARK: INFO/HELP
-    
-    func showInfo() {
-        let app_name = (Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String) ??
-                       (Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String) ?? ""
-        
-        let app_version = (Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String) ??
-                          (Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String) ?? "Unknown"
-        
-        let mame_version_num = myosd_get(Int32(MYOSD_VERSION))
-
-         let text = """
-                   Version \(app_version) (MAME 0.\(mame_version_num))
-                   
-                   Simple port of MAME to iOS
-                   
-                   use `Add ROM...` to add your own custom romsets.
-                   
-                   use touch contorls ◀ ▶ ▲ ▼ Ⓐ Ⓑ Ⓧ Ⓨ to select romset and play.
-                   """
-        
-        let alert = UIAlertController(title:app_name, message:text, preferredStyle:.alert)
-        alert.addAction(UIAlertAction(title: "Done", style: .default, handler:nil))
-        self.present(alert, animated: true)
-    }
-
     
     // MARK: state
     
@@ -258,10 +240,6 @@ class MameViewController: UIViewController, UIDocumentPickerDelegate {
         view.setNeedsLayout()
     }
     
-    override var canBecomeFirstResponder: Bool {
-        return true
-    }
-
     override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
         guard let key = presses.first?.key else {return}
         mameKey(key.keyCode, true)
