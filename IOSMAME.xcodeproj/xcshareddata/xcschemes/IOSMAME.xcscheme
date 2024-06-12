@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "EF1741F9262134CB00DE8386"
-               BuildableName = "iOSMAME.app"
-               BlueprintName = "iOSMAME"
+               BuildableName = "MAME Reloaded.app"
+               BlueprintName = "MAME Reloaded"
                ReferencedContainer = "container:IOSMAME.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,8 +45,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "EF1741F9262134CB00DE8386"
-            BuildableName = "iOSMAME.app"
-            BlueprintName = "iOSMAME"
+            BuildableName = "MAME Reloaded.app"
+            BlueprintName = "MAME Reloaded"
             ReferencedContainer = "container:IOSMAME.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -62,8 +62,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "EF1741F9262134CB00DE8386"
-            BuildableName = "iOSMAME.app"
-            BlueprintName = "iOSMAME"
+            BuildableName = "MAME Reloaded.app"
+            BlueprintName = "MAME Reloaded"
             ReferencedContainer = "container:IOSMAME.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

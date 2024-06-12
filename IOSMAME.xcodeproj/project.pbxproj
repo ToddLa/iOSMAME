@@ -25,7 +25,7 @@
 
 /* Begin PBXFileReference section */
 		EF12ADAA2C0B9CB400B72895 /* Debug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Debug.swift; sourceTree = "<group>"; };
-		EF1741FA262134CB00DE8386 /* iOSMAME.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOSMAME.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		EF1741FA262134CB00DE8386 /* MAME Reloaded.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MAME Reloaded.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EF17423C262214E700DE8386 /* MameViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MameViewController.swift; sourceTree = "<group>"; };
 		EF17424D262215EA00DE8386 /* MetalViewShaders.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MetalViewShaders.h; sourceTree = "<group>"; };
 		EF17424E262215EA00DE8386 /* MetalView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MetalView.m; sourceTree = "<group>"; };
@@ -83,7 +83,7 @@
 		EF1741FB262134CB00DE8386 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				EF1741FA262134CB00DE8386 /* iOSMAME.app */,
+				EF1741FA262134CB00DE8386 /* MAME Reloaded.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -125,9 +125,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		EF1741F9262134CB00DE8386 /* iOSMAME */ = {
+		EF1741F9262134CB00DE8386 /* MAME Reloaded */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = EF17420E262134CC00DE8386 /* Build configuration list for PBXNativeTarget "iOSMAME" */;
+			buildConfigurationList = EF17420E262134CC00DE8386 /* Build configuration list for PBXNativeTarget "MAME Reloaded" */;
 			buildPhases = (
 				EF1741F6262134CB00DE8386 /* Sources */,
 				EF1741F7262134CB00DE8386 /* Frameworks */,
@@ -137,9 +137,9 @@
 			);
 			dependencies = (
 			);
-			name = iOSMAME;
+			name = "MAME Reloaded";
 			productName = IOSMAME;
-			productReference = EF1741FA262134CB00DE8386 /* iOSMAME.app */;
+			productReference = EF1741FA262134CB00DE8386 /* MAME Reloaded.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -170,7 +170,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				EF1741F9262134CB00DE8386 /* iOSMAME */,
+				EF1741F9262134CB00DE8386 /* MAME Reloaded */,
 			);
 		};
 /* End PBXProject section */
@@ -334,6 +334,7 @@
 				DEVELOPMENT_TEAM = 8RUN83V8CA;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = IOSMAME/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Reloaded;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.arcade-games";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -366,6 +367,7 @@
 				DEVELOPMENT_TEAM = 8RUN83V8CA;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = IOSMAME/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Reloaded;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.arcade-games";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -398,7 +400,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		EF17420E262134CC00DE8386 /* Build configuration list for PBXNativeTarget "iOSMAME" */ = {
+		EF17420E262134CC00DE8386 /* Build configuration list for PBXNativeTarget "MAME Reloaded" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				EF17420F262134CC00DE8386 /* Debug */,

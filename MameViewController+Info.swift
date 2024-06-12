@@ -13,6 +13,10 @@ import UIKit
 extension MameViewController {
     
     var app_name:String {
+        return (Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String) ?? ""
+    }
+    
+    var app_display_name:String {
         return  (Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String) ??
                 (Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String) ?? ""
     }
@@ -27,6 +31,7 @@ extension MameViewController {
         let mame_version_num = myosd_get(Int32(MYOSD_VERSION))
 
         let text = """
+                   
                    Simple port of MAME
                    Version \(app_version) (MAME 0.\(mame_version_num))
 
@@ -35,6 +40,7 @@ extension MameViewController {
                    use `Add ROM...` to add your own custom romsets.
                    
                    you can find free to play romsets at mamedev.org/roms
+                   
                    """
         
         let alert = UIAlertController(title:app_name, message:text, preferredStyle:.alert)

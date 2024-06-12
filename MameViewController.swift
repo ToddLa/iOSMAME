@@ -144,8 +144,7 @@ class MameViewController: UIViewController, UIDocumentPickerDelegate {
     // MARK: menu
     
     private func makeMenu() -> UIMenu {
-        let title = (Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String) ??
-                    (Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String) ?? ""
+        let title = (Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String) ?? ""
         
         let menu = UIMenu(title:title, children: [
             UIAction(title: "Add ROM...", image: UIImage(systemName: "plus")) { action in
