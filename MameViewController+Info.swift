@@ -27,7 +27,7 @@ extension MameViewController {
         let mame_version_num = myosd_get(Int32(MYOSD_VERSION))
 
         let text = """
-                   Simple port of MAME to iOS
+                   Simple port of MAME
                    Version \(app_version) (MAME 0.\(mame_version_num))
 
                    use touch contorls ◀ ▶ ▲ ▼ Ⓐ Ⓑ Ⓧ Ⓨ to select romset and play.
