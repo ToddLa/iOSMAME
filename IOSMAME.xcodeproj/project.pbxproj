@@ -17,6 +17,7 @@
 		EF1742772623630C00DE8386 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EF1742762623630C00DE8386 /* AudioToolbox.framework */; };
 		EF17427C26236D7E00DE8386 /* MameDraw.m in Sources */ = {isa = PBXBuildFile; fileRef = EF17427B26236D7E00DE8386 /* MameDraw.m */; };
 		EF3377252C18B13A00001724 /* MameViewController+Info.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF3377242C18B13A00001724 /* MameViewController+Info.swift */; };
+		EF3377272C19FFA100001724 /* mame_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = EF3377262C19FFA100001724 /* mame_logo.png */; };
 		EF5184B62627FA5C00BB4B7C /* MameKeyCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF5184B52627FA5C00BB4B7C /* MameKeyCode.swift */; };
 		EFA8FCA226290F6B0003615D /* MameKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFA8FCA126290F6B0003615D /* MameKeyboard.swift */; };
 		EFE0036A26448F3E00E42246 /* libmame-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EFE0036926448F3E00E42246 /* libmame-ios.a */; };
@@ -39,6 +40,7 @@
 		EF17427A26236D5000DE8386 /* MameDraw.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MameDraw.h; sourceTree = "<group>"; };
 		EF17427B26236D7E00DE8386 /* MameDraw.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MameDraw.m; sourceTree = "<group>"; };
 		EF3377242C18B13A00001724 /* MameViewController+Info.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MameViewController+Info.swift"; sourceTree = "<group>"; };
+		EF3377262C19FFA100001724 /* mame_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = mame_logo.png; sourceTree = "<group>"; };
 		EF5184B52627FA5C00BB4B7C /* MameKeyCode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MameKeyCode.swift; sourceTree = "<group>"; };
 		EFA8FC9F2628E1910003615D /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		EFA8FCA126290F6B0003615D /* MameKeyboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MameKeyboard.swift; sourceTree = "<group>"; };
@@ -101,6 +103,7 @@
 			isa = PBXGroup;
 			children = (
 				EFE0036826448F0000E42246 /* libmame.h */,
+				EF3377262C19FFA100001724 /* mame_logo.png */,
 				EF174258262216D000DE8386 /* LaunchScreen.storyboard */,
 				EF174259262216D000DE8386 /* Assets.xcassets */,
 				EF17425A262216D000DE8386 /* Bridging-Header.h */,
@@ -177,6 +180,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EF3377272C19FFA100001724 /* mame_logo.png in Resources */,
 				EF17425D262216D000DE8386 /* Assets.xcassets in Resources */,
 				EF17425C262216D000DE8386 /* LaunchScreen.storyboard in Resources */,
 			);
